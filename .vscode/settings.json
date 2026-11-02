@@ -1,0 +1,42 @@
+{
+  // 关联 CSS 文件至 Tailwind CSS 专用语言模式，消除 @theme、@custom-variant、@utility 等指令的未知告警并提供语法高亮
+  "files.associations": {
+    "*.css": "tailwindcss"
+  },
+
+  // 关闭原生 CSS 校验器对 @theme, @custom-variant, @apply, @layer 等 Tailwind 指令的未知规则警告
+  "css.lint.unknownAtRules": "ignore",
+
+  // 在 JSX/TSX 字符串与属性中启用自动补全
+  "editor.quickSuggestions": {
+    "strings": "on"
+  },
+
+  // 支持在 shadcn 的 cn(...) 与 cva(...) 工具函数中自动提示 Tailwind 类名
+  "tailwindCSS.experimental.classRegex": [
+    ["cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"],
+    ["cn\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"]
+  ],
+
+  // 默认使用 Oxc (oxfmt) 作为代码格式化工具并开启保存时格式化
+  "editor.defaultFormatter": "oxc.oxc-vscode",
+  "editor.formatOnSave": true,
+  "[javascript]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode"
+  },
+  "[javascriptreact]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode"
+  }
+}

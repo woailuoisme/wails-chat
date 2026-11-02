@@ -1,0 +1,12 @@
+# 提交前：先挡密钥，再校验文档；两者都不修改文件，只拦截
+pre-commit:
+  parallel: true
+  jobs:
+    - name: gitleaks
+      tags: [security]
+      run: gitleaks git --staged --redact --no-banner
+
+    - name: rumdl
+      tags: [docs]
+      glob: "*.md"
+      run: rumdl check {staged_files}

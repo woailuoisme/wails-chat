@@ -1,0 +1,127 @@
+# 打 tag（v*）时三平台原生构建安装包，汇总后创建 draft Release；
+# workflow_dispatch 只构建、不发布。
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write # 上传 Release 资产所需
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  WAILS_VERSION: v3.1.0 # 与 go.mod 保持一致
+  BUN_VERSION: 1.4.4 # 与 mise.toml 保持一致
+
+jobs:
+  build:
+    name: build (${{ matrix.artifact }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-24.04
+            artifact: linux
+            artifact-path: |
+              bin/*.deb
+              bin/*.rpm
+              bin/*.AppImage
+            pack: wails3 task linux:package
+
+          - os: windows-latest
+            artifact: windows
+            artifact-path: |
+              bin/*-installer.exe
+            pack: wails3 task windows:package
+
+          # dmg 只能在 darwin 上生成（create:dmg 带 platforms: [darwin]）
+          - os: macos-14
+            artifact: macos
+            artifact-path: |
+              bin/*.dmg
+            pack: |
+              wails3 task darwin:package:universal
+              wails3 task darwin:create:dmg
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: go.mod
+          cache: true
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: ${{ env.BUN_VERSION }}
+
+      # Wails v3 在 Linux 需要 GTK4 + WebKitGTK 6.0 的头文件
+      - name: Install Linux build deps
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            libgtk-4-dev libwebkitgtk-6.0-dev libx11-dev \
+            libgtk-3-dev libwebkit2gtk-4.1-dev pkg-config
+
+      # bash 在三个 runner 上都可用，避免 PowerShell 与 POSIX 两套写法
+      - name: Install Wails CLI
+        shell: bash
+        run: |
+          go install github.com/wailsapp/wails/v3/cmd/wails3@${WAILS_VERSION}
+          echo "$(go env GOPATH)/bin" >> "$GITHUB_PATH"
+
+      - name: Ensure NSIS
+        if: runner.os == 'Windows'
+        shell: bash
+        run: |
+          if ! command -v makensis >/dev/null 2>&1; then
+            choco install nsis -y --no-progress
+            echo "C:/Program Files (x86)/NSIS" >> "$GITHUB_PATH"
+          fi
+
+      # 版本号派生到 Info.plist / nfpm.yaml / nsi 的唯一入口
+      - name: Stamp version from tag
+        if: startsWith(github.ref, 'refs/tags/v')
+        shell: bash
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          echo "version=$version"
+          sed -i.bak -E "s/^  version: .*/  version: \"${version}\"/" build/config.yml
+          rm -f build/config.yml.bak
+          grep -n '  version:' build/config.yml
+          wails3 task common:update:build-assets
+
+      - name: Package
+        run: ${{ matrix.pack }}
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: ${{ matrix.artifact }}
+          path: ${{ matrix.artifact-path }}
+          if-no-files-found: error
+
+  release:
+    name: draft release
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          path: dist
+          merge-multiple: true
+
+      - uses: softprops/action-gh-release@v3
+        with:
+          draft: true
+          generate_release_notes: true
+          files: dist/**

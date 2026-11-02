@@ -1,0 +1,15 @@
+:root {
+  /* 与 main.go 的 InvisibleTitleBarHeight 保持一致，改一处即可 */
+  --titlebar-inset: 36px;
+  /* 红绿灯实际占用宽度：侧栏收起时由 header 让位 */
+  --traffic-lights-width: 80px;
+}
+
+/* 拖拽区：可拖窗，内部的交互元素必须显式退出（自定义属性会继承） */
+[data-drag-region] {
+  --wails-draggable: drag;
+}
+
+[data-drag-region] :is(button, a, input, select, textarea, [role="button"]) {
+  --wails-draggable: no-drag;
+}

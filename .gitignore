@@ -1,5 +1,9 @@
 .task
 .wails
+.DS_Store
 bin
 frontend/dist
 frontend/node_modules
+frontend/package-lock.json
+# CI 版本注入的 sed 备份
+build/config.yml.bak

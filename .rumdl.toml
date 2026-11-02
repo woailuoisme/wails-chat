@@ -1,0 +1,7 @@
+# rumdl：Markdown 检查。规则全集见 `rumdl rule`
+[global]
+# MD013 行宽、MD033 内联 HTML：文档写作习惯，不是错误
+disable = ["MD013", "MD033"]
+flavor = "gfm"
+respect-gitignore = true
+exclude = [".git", "node_modules", "dist", "build"]

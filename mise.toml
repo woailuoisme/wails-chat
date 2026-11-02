@@ -1,0 +1,9 @@
+# 本仓库工具链版本；`mise install` 一次装齐，与 go.mod / frontend 保持一致
+[tools]
+go = "latest"
+node = "24"
+bun = "latest"
+lefthook = "latest"
+gitleaks = "latest"
+rumdl = "latest"
+"go:github.com/wailsapp/wails/v3/cmd/wails3" = "3.1.0"
