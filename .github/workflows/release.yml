@@ -126,9 +126,11 @@ jobs:
           merge-multiple: true
 
       # 用预装的 gh 而不是第三方 action：tag 解析失败时会直接报错，不会静默落成 untagged 草稿
+      # 这个 job 没有 checkout，GH_REPO 提供仓库上下文
       - name: Create draft release
         env:
           GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
         run: |
           gh release create "${GITHUB_REF_NAME}" \
             --draft \
