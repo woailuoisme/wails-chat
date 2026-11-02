@@ -125,8 +125,13 @@ jobs:
           path: dist
           merge-multiple: true
 
-      - uses: softprops/action-gh-release@v3
-        with:
-          draft: true
-          generate_release_notes: true
-          files: dist/**
+      # 用预装的 gh 而不是第三方 action：tag 解析失败时会直接报错，不会静默落成 untagged 草稿
+      - name: Create draft release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "${GITHUB_REF_NAME}" \
+            --draft \
+            --generate-notes \
+            --title "${GITHUB_REF_NAME}" \
+            dist/*
