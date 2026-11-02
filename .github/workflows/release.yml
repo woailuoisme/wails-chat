@@ -92,10 +92,12 @@ jobs:
       - name: Stamp version from tag
         if: startsWith(github.ref, 'refs/tags/v')
         shell: bash
+        env:
+          TAG: ${{ github.ref_name }}
         run: |
-          version="${GITHUB_REF_NAME#v}"
+          version="${TAG#v}"
           if ! [[ "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-            echo "::error::tag ${GITHUB_REF_NAME} 不是 vX.Y.Z 形式，Windows 安装器无法生成"
+            echo "::error::tag ${TAG} 不是 vX.Y.Z 形式，Windows 安装器无法生成"
             exit 1
           fi
           echo "version=$version"
@@ -126,14 +128,19 @@ jobs:
           merge-multiple: true
 
       # 用预装的 gh 而不是第三方 action：tag 解析失败时会直接报错，不会静默落成 untagged 草稿
-      # 这个 job 没有 checkout，GH_REPO 提供仓库上下文
+      # 这个 job 没有 checkout，GH_REPO 提供仓库上下文；TAG 走表达式上下文，不依赖 GITHUB_REF_NAME
       - name: Create draft release
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
+          TAG: ${{ github.ref_name }}
         run: |
-          gh release create "${GITHUB_REF_NAME}" \
+          echo "tag=[$TAG]"
+          test -n "$TAG"
+          gh release create "$TAG" \
             --draft \
             --generate-notes \
-            --title "${GITHUB_REF_NAME}" \
+            --title "$TAG" \
+            --verify-tag \
             dist/*
+          gh release view "$TAG" --json tagName,isDraft,assets --jq '"\(.tagName) draft=\(.isDraft) assets=\(.assets|length)"'
