@@ -87,12 +87,18 @@ jobs:
             echo "C:/Program Files (x86)/NSIS" >> "$GITHUB_PATH"
           fi
 
-      # 版本号派生到 Info.plist / nfpm.yaml / nsi 的唯一入口
+      # NSIS 的 VIProductVersion 是 "${INFO_PRODUCTVERSION}.0"，所以这里只能写纯 X.Y.Z；
+      # 带 -rc1 之类后缀会让 Windows 安装包直接生成失败
       - name: Stamp version from tag
         if: startsWith(github.ref, 'refs/tags/v')
         shell: bash
         run: |
           version="${GITHUB_REF_NAME#v}"
+          version="${version%%-*}"
+          if ! [[ "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "::error::tag ${GITHUB_REF_NAME} 不是 vX.Y.Z 形式，Windows 安装器无法生成"
+            exit 1
+          fi
           echo "version=$version"
           sed -i.bak -E "s/^  version: .*/  version: \"${version}\"/" build/config.yml
           rm -f build/config.yml.bak
