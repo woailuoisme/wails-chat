@@ -1,21 +1,15 @@
+import { useTranslation } from "react-i18next";
+
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import {
-  IS_LANGUAGE_SWITCH_SUPPORTED,
-  useSettingsStore,
-  type AppLanguage,
-} from "@/lib/store/settings-store";
+import { useSettingsStore, type AppLanguage } from "@/lib/store/settings-store";
 
 import { SegmentedControl } from "../SegmentedControl";
 import { SettingCard, SettingRow } from "../SettingCard";
 
-const LANGUAGE_OPTIONS: ReadonlyArray<{ value: AppLanguage; label: string; disabled?: boolean }> = [
-  { value: "zh", label: "简体中文", disabled: !IS_LANGUAGE_SWITCH_SUPPORTED },
-  { value: "en", label: "English", disabled: !IS_LANGUAGE_SWITCH_SUPPORTED },
-];
-
 export function GeneralTab() {
+  const { t } = useTranslation();
   const launchOnStartup = useSettingsStore((state) => state.launchOnStartup);
   const setLaunchOnStartup = useSettingsStore((state) => state.setLaunchOnStartup);
   const keepWindowOnTop = useSettingsStore((state) => state.keepWindowOnTop);
@@ -29,17 +23,22 @@ export function GeneralTab() {
   const language = useSettingsStore((state) => state.language);
   const setLanguage = useSettingsStore((state) => state.setLanguage);
 
+  const languageOptions: ReadonlyArray<{ value: AppLanguage; label: string }> = [
+    { value: "zh", label: t("settings.general.language.zh") },
+    { value: "en", label: t("settings.general.language.en") },
+  ];
+
   return (
     <div className="space-y-4">
       <SettingCard
-        title="全局唤起"
-        description="在任何应用中按快捷键把窗口拉到前台。"
-        footnote="默认关闭：系统级快捷键会抢占其他应用，需手动开启。支持 Alt / Option / CommandOrControl / Shift 与字母、功能键组合。"
+        title={t("settings.general.globalShortcut.title")}
+        description={t("settings.general.globalShortcut.description")}
+        footnote={t("settings.general.globalShortcut.footnote")}
       >
         <div className="space-y-3">
           <SettingRow
-            label="启用全局唤起"
-            description="开启后才会向系统注册下面的组合键。"
+            label={t("settings.general.enableShortcut.label")}
+            description={t("settings.general.enableShortcut.description")}
             htmlFor="global-shortcut-enabled"
           >
             <Switch
@@ -51,11 +50,11 @@ export function GeneralTab() {
 
           <div>
             <Label htmlFor="global-shortcut" className="sr-only">
-              全局唤起快捷键
+              {t("settings.general.shortcutInput.label")}
             </Label>
             <Input
               id="global-shortcut"
-              aria-label="全局唤起快捷键"
+              aria-label={t("settings.general.shortcutInput.label")}
               value={globalShortcut}
               onChange={(event) => setGlobalShortcut(event.target.value)}
               placeholder="Option+Space"
@@ -66,11 +65,11 @@ export function GeneralTab() {
         </div>
       </SettingCard>
 
-      <SettingCard title="桌面系统集成">
+      <SettingCard title={t("settings.general.integration.title")}>
         <div className="divide-border/40 divide-y">
           <SettingRow
-            label="开机自启"
-            description="登录 macOS 时自动启动应用。"
+            label={t("settings.general.launchOnStartup.label")}
+            description={t("settings.general.launchOnStartup.description")}
             htmlFor="launch-on-startup"
             className="pb-3"
           >
@@ -82,8 +81,8 @@ export function GeneralTab() {
           </SettingRow>
 
           <SettingRow
-            label="窗口置顶"
-            description="让窗口始终浮在其他应用之上。"
+            label={t("settings.general.keepOnTop.label")}
+            description={t("settings.general.keepOnTop.description")}
             htmlFor="keep-on-top"
             className="py-3"
           >
@@ -95,8 +94,8 @@ export function GeneralTab() {
           </SettingRow>
 
           <SettingRow
-            label="关闭窗口时隐藏到托盘"
-            description="关闭后进程继续驻留，点击 Dock 图标可重新唤回。"
+            label={t("settings.general.closeToTray.label")}
+            description={t("settings.general.closeToTray.description")}
             htmlFor="close-to-tray"
             className="pt-3"
           >
@@ -106,14 +105,13 @@ export function GeneralTab() {
       </SettingCard>
 
       <SettingCard
-        title="界面语言"
-        description="当前所有文案均为中英双语硬编码。"
-        footnote="完整国际化（i18n）尚未接入，故此处暂时禁用，避免展示不生效的开关。"
+        title={t("settings.general.language.title")}
+        description={t("settings.general.language.description")}
       >
         <SegmentedControl
-          ariaLabel="界面语言"
+          ariaLabel={t("settings.general.language.aria")}
           value={language}
-          options={LANGUAGE_OPTIONS}
+          options={languageOptions}
           onChange={setLanguage}
         />
       </SettingCard>

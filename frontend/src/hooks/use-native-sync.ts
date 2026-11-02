@@ -1,5 +1,6 @@
 import * as React from "react";
 
+import i18n from "@/i18n";
 import {
   setupCloseToTray,
   syncAlwaysOnTop,
@@ -22,11 +23,24 @@ export function useNativeSync(): void {
   const globalShortcutEnabled = useSettingsStore((state) => state.globalShortcutEnabled);
   const fontSize = useSettingsStore((state) => state.fontSize);
   const codeFont = useSettingsStore((state) => state.codeFont);
+  const chatWidth = useSettingsStore((state) => state.chatWidth);
+  const language = useSettingsStore((state) => state.language);
+
+  // 语言：i18next 与 <html lang> 同时切换
+  React.useEffect(() => {
+    void i18n.changeLanguage(language);
+    document.documentElement.lang = language === "zh" ? "zh-CN" : "en";
+  }, [language]);
 
   // 字号：以 data 属性驱动 global.css 中的 --chat-font-size
   React.useEffect(() => {
     document.documentElement.dataset.fontSize = fontSize;
   }, [fontSize]);
+
+  // 对话宽度：生成版 Thread 把 --thread-max-width 写在行内样式里，只能靠 CSS 覆盖
+  React.useEffect(() => {
+    document.documentElement.dataset.chatWidth = chatWidth;
+  }, [chatWidth]);
 
   // 代码字体：覆盖 :root 上的 --font-mono，Tailwind 的 font-mono 工具类随之生效
   React.useEffect(() => {

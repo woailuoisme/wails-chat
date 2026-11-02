@@ -1,5 +1,6 @@
 import { Check, Trash2 } from "lucide-react";
 import * as React from "react";
+import { useTranslation } from "react-i18next";
 
 import {
   AlertDialog,
@@ -16,18 +17,17 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
+import { clearAllThreads } from "@/lib/chat/thread-store";
 import { useChatStore } from "@/lib/store/chat-store";
 import { useSettingsStore, type SendKeyMode } from "@/lib/store/settings-store";
 
 import { SegmentedControl } from "../SegmentedControl";
 import { SettingCard, SettingRow } from "../SettingCard";
 
-const SEND_KEY_OPTIONS: ReadonlyArray<{ value: SendKeyMode; label: string }> = [
-  { value: "enter", label: "Enter（↵）" },
-  { value: "meta-enter", label: "⌘ + Enter" },
-];
+const SEND_KEY_VALUES: ReadonlyArray<SendKeyMode> = ["enter", "meta-enter"];
 
 export function ApplicationTab() {
+  const { t } = useTranslation();
   const sendKey = useSettingsStore((state) => state.sendKey);
   const setSendKey = useSettingsStore((state) => state.setSendKey);
   const autoSaveDrafts = useSettingsStore((state) => state.autoSaveDrafts);
@@ -35,14 +35,13 @@ export function ApplicationTab() {
   const downloadPath = useSettingsStore((state) => state.downloadPath);
   const setDownloadPath = useSettingsStore((state) => state.setDownloadPath);
 
-  const clearAllConversations = useChatStore((state) => state.clearAllConversations);
   const clearAllDrafts = useChatStore((state) => state.clearAllDrafts);
 
   /**
    * 关闭草稿保留时清空已存草稿。
    *
    * 刻意不动输入框里**当前**已显示的文字——那可能是用户正在写的内容，
-   * 清掉等于替他删草稿。切走再切回时不会再恢复（`ChatInput` 初始化会读开关）。
+   * 清掉等于替他删草稿。切走再切回时不会再恢复（输入框初始化时会读开关）。
    */
   const handleAutoSaveDraftsChange = React.useCallback(
     (enabled: boolean) => {
@@ -61,25 +60,36 @@ export function ApplicationTab() {
   }, [cleared]);
 
   const handleClearConversations = React.useCallback(() => {
-    clearAllConversations();
+    clearAllThreads();
     setCleared(true);
-  }, [clearAllConversations]);
+  }, []);
+
+  const sendKeyOptions = SEND_KEY_VALUES.map((value) => ({
+    value,
+    label:
+      value === "enter"
+        ? t("settings.application.sendKey.enter")
+        : t("settings.application.sendKey.metaEnter"),
+  }));
 
   return (
     <div className="space-y-4">
-      <SettingCard title="发送方式" description="选择提交消息的按键组合；换行始终为 ⇧ + Enter。">
+      <SettingCard
+        title={t("settings.application.sendKey.title")}
+        description={t("settings.application.sendKey.description")}
+      >
         <SegmentedControl
-          ariaLabel="发送消息按键"
+          ariaLabel={t("settings.application.sendKey.aria")}
           value={sendKey}
-          options={SEND_KEY_OPTIONS}
+          options={sendKeyOptions}
           onChange={setSendKey}
         />
       </SettingCard>
 
       <SettingCard>
         <SettingRow
-          label="保留草稿"
-          description="切换会话时记住尚未发送的输入内容。"
+          label={t("settings.application.drafts.label")}
+          description={t("settings.application.drafts.description")}
           htmlFor="auto-save-drafts"
         >
           <Switch
@@ -91,12 +101,12 @@ export function ApplicationTab() {
       </SettingCard>
 
       <SettingCard
-        title="下载目录"
-        description="Artifacts 导出与代码下载保存到该路径。"
-        footnote="支持 ~ 前缀；目录不存在时会自动创建。"
+        title={t("settings.application.download.title")}
+        description={t("settings.application.download.description")}
+        footnote={t("settings.application.download.footnote")}
       >
         <Label htmlFor="download-path" className="sr-only">
-          下载目录路径
+          {t("settings.application.download.aria")}
         </Label>
         <Input
           id="download-path"
@@ -109,8 +119,8 @@ export function ApplicationTab() {
 
       <SettingCard
         tone="danger"
-        title="重置本地数据"
-        description="清空全部会话、消息与草稿。API Key 保存在系统钥匙串中，不受影响。"
+        title={t("settings.application.reset.title")}
+        description={t("settings.application.reset.description")}
       >
         <AlertDialog>
           <AlertDialogTrigger asChild>
@@ -120,20 +130,26 @@ export function ApplicationTab() {
               ) : (
                 <Trash2 className="size-3.5" aria-hidden="true" />
               )}
-              <span>{cleared ? "已清空" : "清空全部会话"}</span>
+              <span>
+                {cleared
+                  ? t("settings.application.reset.cleared")
+                  : t("settings.application.reset.action")}
+              </span>
             </Button>
           </AlertDialogTrigger>
 
           <AlertDialogContent>
             <AlertDialogHeader>
-              <AlertDialogTitle>确认清空全部会话？</AlertDialogTitle>
+              <AlertDialogTitle>{t("settings.application.reset.confirmTitle")}</AlertDialogTitle>
               <AlertDialogDescription>
-                该操作会删除本机保存的所有对话记录，且无法撤销。
+                {t("settings.application.reset.confirmBody")}
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel>取消</AlertDialogCancel>
-              <AlertDialogAction onClick={handleClearConversations}>确认清空</AlertDialogAction>
+              <AlertDialogCancel>{t("common.cancel")}</AlertDialogCancel>
+              <AlertDialogAction onClick={handleClearConversations}>
+                {t("settings.application.reset.confirmAction")}
+              </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>

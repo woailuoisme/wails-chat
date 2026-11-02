@@ -3,25 +3,56 @@ import type * as React from "react";
 
 export interface SettingsTabMeta {
   id: string;
-  label: string;
-  description: string;
+  /** i18n key，渲染时再取文案 */
+  labelKey: string;
+  descriptionKey: string;
   icon: React.ComponentType<{ className?: string }>;
 }
 
 /** 设置面板的分类定义（顺序即导航顺序） */
 export const SETTINGS_TABS: readonly SettingsTabMeta[] = [
-  { id: "general", label: "通用", description: "桌面行为、全局唤起与系统集成", icon: Sliders },
+  {
+    id: "general",
+    labelKey: "settings.tabs.general.label",
+    descriptionKey: "settings.tabs.general.description",
+    icon: Sliders,
+  },
   {
     id: "application",
-    label: "应用",
-    description: "输入方式、下载目录与本地数据",
+    labelKey: "settings.tabs.application.label",
+    descriptionKey: "settings.tabs.application.description",
     icon: AppWindow,
   },
-  { id: "appearance", label: "外观", description: "主题、字号、代码字体与阅读宽度", icon: Palette },
-  { id: "shortcuts", label: "快捷键", description: "已实现的键盘操作一览", icon: Keyboard },
-  { id: "notifications", label: "通知", description: "系统横幅与完成提示音", icon: Bell },
-  { id: "models", label: "模型", description: "Provider 密钥与推理参数", icon: Cpu },
-  { id: "projects", label: "指令", description: "注入每次会话的系统提示词", icon: FolderKanban },
+  {
+    id: "appearance",
+    labelKey: "settings.tabs.appearance.label",
+    descriptionKey: "settings.tabs.appearance.description",
+    icon: Palette,
+  },
+  {
+    id: "shortcuts",
+    labelKey: "settings.tabs.shortcuts.label",
+    descriptionKey: "settings.tabs.shortcuts.description",
+    icon: Keyboard,
+  },
+  {
+    id: "notifications",
+    labelKey: "settings.tabs.notifications.label",
+    descriptionKey: "settings.tabs.notifications.description",
+    icon: Bell,
+  },
+  {
+    id: "models",
+    labelKey: "settings.tabs.models.label",
+    descriptionKey: "settings.tabs.models.description",
+    icon: Cpu,
+  },
+  {
+    id: "projects",
+    labelKey: "settings.tabs.projects.label",
+    descriptionKey: "settings.tabs.projects.description",
+    icon: FolderKanban,
+  },
 ];
 
 export type SettingsTabId = (typeof SETTINGS_TABS)[number]["id"];

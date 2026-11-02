@@ -5,6 +5,8 @@
  * 统一走 `Intl.RelativeTimeFormat`，自动获得本地化输出。
  */
 
+import i18n from "@/i18n";
+
 type UnitStep = [Intl.RelativeTimeFormatUnit, number];
 
 /** 各时间单位的进位阈值（当前单位下，达到多少即进到下一单位） */
@@ -16,7 +18,9 @@ const UNIT_STEPS: readonly UnitStep[] = [
   ["month", 12],
 ];
 
-const formatter = new Intl.RelativeTimeFormat("zh-CN", { numeric: "auto" });
+const formatter = new Intl.RelativeTimeFormat(i18n.language === "zh" ? "zh-CN" : "en", {
+  numeric: "auto",
+});
 
 /**
  * 把时间戳格式化成「3 分钟前」这类相对时间。
@@ -24,7 +28,7 @@ const formatter = new Intl.RelativeTimeFormat("zh-CN", { numeric: "auto" });
  * @param now 参照时间，默认当前时刻
  */
 export function formatRelativeTime(target: number, now: number = Date.now()): string {
-  if (!target) return "刚刚";
+  if (!target) return i18n.t("time.justNow");
 
   // 转为「秒」差，负数表示过去
   let delta = Math.round((target - now) / 1000);

@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next";
+
 import { cn } from "@/lib/utils";
 
 import { SETTINGS_TABS, type SettingsTabId } from "./settings-tabs";
@@ -9,14 +11,16 @@ interface SettingsNavProps {
 
 /** 设置面板左侧分类导航 */
 export function SettingsNav({ activeTab, onSelect }: SettingsNavProps) {
+  const { t } = useTranslation();
+
   return (
     <nav
-      aria-label="设置分类"
+      aria-label={t("settings.nav.aria")}
       className="border-border/60 bg-muted/30 flex w-52 shrink-0 flex-col justify-between border-r p-3 select-none"
     >
       <div className="space-y-1">
         <div className="text-foreground px-2.5 py-1.5 text-xs font-semibold tracking-tight">
-          设置
+          {t("settings.title")}
         </div>
 
         {SETTINGS_TABS.map((tab) => {
@@ -37,7 +41,7 @@ export function SettingsNav({ activeTab, onSelect }: SettingsNavProps) {
               )}
             >
               <Icon className="size-4 shrink-0 opacity-70" />
-              <span>{tab.label}</span>
+              <span>{t(tab.labelKey)}</span>
             </button>
           );
         })}

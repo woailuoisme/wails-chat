@@ -30,3 +30,42 @@ html[data-font-size="medium"] {
 html[data-font-size="large"] {
   --chat-font-size: 1.0625rem;
 }
+
+/*
+ * 生成版 Thread 的宽度是行内样式（--thread-max-width: 44rem），
+ * 样式表只有加 !important 才能覆盖行内声明。
+ */
+html[data-chat-width="standard"] .aui-thread-root {
+  --thread-max-width: 44rem !important;
+}
+
+html[data-chat-width="wide"] .aui-thread-root {
+  --thread-max-width: 60rem !important;
+}
+
+html[data-chat-width="full"] .aui-thread-root {
+  --thread-max-width: 100% !important;
+}
+
+/* 正文：助手正文走 .aui-md，用户气泡是纯文本节点，两者都要跟随字号 */
+html[data-font-size] .aui-md,
+html[data-font-size] .aui-user-message-content {
+  font-size: var(--chat-font-size);
+}
+
+/*
+ * 生成版消息根用 [content-visibility:auto] + contain-intrinsic-size:200px，
+ * 屏幕外的长消息盒子高度会停在 200px，导致 scrollHeight 偏小、正文被粘性
+ * 输入框盖住且滚不出来。这里恢复成正常测量。
+ */
+[data-slot="aui_assistant-message-root"],
+[data-slot="aui_user-message-root"] {
+  content-visibility: visible !important;
+  contain-intrinsic-size: none !important;
+}
+
+/* Lexical 编辑器自带的焦点框与 composer 的 focus-within 环重复 */
+.aui-lexical-editor [contenteditable]:focus,
+.aui-lexical-editor [contenteditable]:focus-visible {
+  outline: none;
+}

@@ -1,5 +1,6 @@
 import { Check, Copy, Download, Loader2 } from "lucide-react";
 import * as React from "react";
+import { useTranslation } from "react-i18next";
 
 import { Button } from "@/components/ui/button";
 import { CodeBlock, CodeBlockContent, CodeBlockLine } from "@/components/ui/code-block";
@@ -15,6 +16,7 @@ interface CodeViewerProps {
 }
 
 export function CodeViewer({ code, language, filename }: CodeViewerProps) {
+  const { t } = useTranslation();
   const [copied, setCopied] = React.useState(false);
   const [isSaving, setIsSaving] = React.useState(false);
   const [savedPath, setSavedPath] = React.useState<string | null>(null);
@@ -56,7 +58,7 @@ export function CodeViewer({ code, language, filename }: CodeViewerProps) {
     <div className="bg-background relative flex h-full flex-col">
       <div className="border-border/50 bg-muted/20 flex items-center justify-between border-b px-4 py-2">
         <span className="text-muted-foreground font-mono text-xs uppercase">
-          {language} · {lineCount} 行
+          {language} · {lineCount} {t("artifacts.lines")}
         </span>
         <div className="flex items-center gap-1.5">
           <Button
@@ -70,7 +72,7 @@ export function CodeViewer({ code, language, filename }: CodeViewerProps) {
             ) : (
               <Copy className="size-3.5" aria-hidden="true" />
             )}
-            <span>{copied ? "已复制" : "复制"}</span>
+            <span>{copied ? t("common.copied") : t("common.copy")}</span>
           </Button>
           <Button
             variant="ghost"
@@ -79,14 +81,14 @@ export function CodeViewer({ code, language, filename }: CodeViewerProps) {
             disabled={isSaving}
             aria-busy={isSaving}
             className="text-muted-foreground hover:text-foreground h-7 gap-1 px-2 text-xs"
-            title={`保存到 ${downloadPath}`}
+            title={t("artifacts.saveTo", { path: downloadPath })}
           >
             {isSaving ? (
               <Loader2 className="size-3.5 animate-spin" aria-hidden="true" />
             ) : (
               <Download className="size-3.5" aria-hidden="true" />
             )}
-            <span>{isSaving ? "保存中" : "下载"}</span>
+            <span>{isSaving ? t("artifacts.saving") : t("common.download")}</span>
           </Button>
         </div>
       </div>
@@ -97,7 +99,7 @@ export function CodeViewer({ code, language, filename }: CodeViewerProps) {
           aria-live="polite"
           className="border-border/40 bg-muted/30 text-muted-foreground border-b px-4 py-1.5 font-mono text-[11px]"
         >
-          已保存到 {savedPath}
+          {t("artifacts.savedTo", { path: savedPath })}
         </p>
       )}
 

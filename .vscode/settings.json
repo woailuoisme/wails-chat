@@ -38,5 +38,13 @@
   },
   "[jsonc]": {
     "editor.defaultFormatter": "oxc.oxc-vscode"
-  }
+  },
+
+  // 生成代码（shadcn / assistant-ui）不参与 Tailwind IntelliSense，避免 suggestCanonicalClasses 等噪音；与 oxlint/oxfmt 的 ignorePatterns 保持一致
+  // 注意：工作区根是仓库根，前端在 frontend/ 下，所以用 **/ 前缀
+  "tailwindCSS.files.exclude": [
+    "**/node_modules/**",
+    "**/src/components/ui/**",
+    "**/src/components/assistant-ui/**"
+  ]
 }

@@ -1,5 +1,7 @@
+import { useAui, useAuiState } from "@assistant-ui/react";
 import { Layers, MessageSquare, Plus, Settings, Sparkles } from "lucide-react";
 import * as React from "react";
+import { useTranslation } from "react-i18next";
 
 import {
   Command,
@@ -23,11 +25,11 @@ import { useSettingsStore } from "@/lib/store/settings-store";
  * 消息条数按需从 store 快照读取，避免面板常驻时被流式更新反复唤醒。
  */
 export function CommandPalette() {
-  const conversations = useChatStore((state) => state.conversations);
+  const { t } = useTranslation();
+  const aui = useAui();
+  const threads = useAuiState((state) => state.threads.threadItems);
   const isCommandPaletteOpen = useChatStore((state) => state.isCommandPaletteOpen);
   const setCommandPaletteOpen = useChatStore((state) => state.setCommandPaletteOpen);
-  const selectConversation = useChatStore((state) => state.selectConversation);
-  const createConversation = useChatStore((state) => state.createConversation);
 
   const artifactsList = useArtifactsStore((state) => state.artifactsList);
   const openArtifact = useArtifactsStore((state) => state.openArtifact);
@@ -44,26 +46,26 @@ export function CommandPalette() {
     <CommandDialog
       open={isCommandPaletteOpen}
       onOpenChange={setCommandPaletteOpen}
-      title="搜索 Starter"
-      description="搜索会话、Artifacts 与命令"
+      title={t("palette.title")}
+      description={t("palette.description")}
     >
       {/* ui/command 是 shadcn 生成物不能改：CommandDialog 不自带根，
           Input/List/Item 必须包在 Command 里才能拿到 cmdk store context */}
       <Command>
-        <CommandInput placeholder="搜索会话、Artifacts 或命令（⌘K）…" />
+        <CommandInput placeholder={t("palette.placeholder")} />
         <CommandList className="max-h-80 overflow-y-auto">
-          <CommandEmpty>没有匹配结果。</CommandEmpty>
+          <CommandEmpty>{t("palette.empty")}</CommandEmpty>
 
-          <CommandGroup heading="操作">
+          <CommandGroup heading={t("palette.actions")}>
             <CommandItem
               onSelect={() => {
-                createConversation(selectedModelId);
+                aui.threads.switchToNewThread();
                 closePalette();
               }}
               className="cursor-pointer gap-2 text-xs"
             >
               <Plus className="text-primary size-3.5" aria-hidden="true" />
-              <span>新建会话</span>
+              <span>{t("palette.newChat")}</span>
             </CommandItem>
             <CommandItem
               onSelect={() => {
@@ -73,35 +75,31 @@ export function CommandPalette() {
               className="cursor-pointer gap-2 text-xs"
             >
               <Settings className="text-muted-foreground size-3.5" aria-hidden="true" />
-              <span>打开设置与 API Key</span>
+              <span>{t("palette.openSettings")}</span>
             </CommandItem>
           </CommandGroup>
 
           <CommandSeparator />
 
-          {conversations.length > 0 && (
-            <CommandGroup heading="会话">
-              {conversations.map((conversation) => {
-                // 只在面板打开时取一次快照，无需订阅整表消息
-                const messageCount = useChatStore.getState().messages[conversation.id]?.length ?? 0;
-
+          {threads.length > 0 && (
+            <CommandGroup heading={t("palette.conversations")}>
+              {threads.map((conversation) => {
                 return (
                   <CommandItem
                     key={conversation.id}
-                    value={`${conversation.title} ${conversation.id}`}
+                    value={`${conversation.title ?? t("palette.newConversation")} ${conversation.id}`}
                     onSelect={() => {
-                      selectConversation(conversation.id);
+                      aui.threads.switchToThread(conversation.id);
                       closePalette();
                     }}
                     className="flex cursor-pointer items-center justify-between gap-2 text-xs"
                   >
                     <div className="flex min-w-0 items-center gap-2">
                       <MessageSquare className="size-3.5 shrink-0 opacity-60" aria-hidden="true" />
-                      <span className="truncate">{conversation.title}</span>
+                      <span className="truncate">
+                        {conversation.title ?? t("palette.newConversation")}
+                      </span>
                     </div>
-                    <span className="text-muted-foreground font-mono text-[10px]">
-                      {messageCount} 条
-                    </span>
                   </CommandItem>
                 );
               })}
@@ -136,7 +134,7 @@ export function CommandPalette() {
 
           <CommandSeparator />
 
-          <CommandGroup heading="切换模型">
+          <CommandGroup heading={t("palette.switchModel")}>
             {AVAILABLE_MODELS.map((model) => (
               <CommandItem
                 key={model.id}
@@ -152,7 +150,9 @@ export function CommandPalette() {
                   <span>{model.name}</span>
                 </div>
                 {selectedModelId === model.id && (
-                  <span className="text-primary text-[10px] font-semibold">当前</span>
+                  <span className="text-primary text-[10px] font-semibold">
+                    {t("palette.current")}
+                  </span>
                 )}
               </CommandItem>
             ))}

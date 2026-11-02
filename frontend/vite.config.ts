@@ -1,9 +1,9 @@
+import path from "node:path";
+
 import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
 import wails from "@wailsio/runtime/plugins/vite";
 import { defineConfig } from "vite";
-
-import { alias } from "./vite.alias.ts";
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -13,5 +13,6 @@ export default defineConfig({
     strictPort: true,
   },
   plugins: [react(), tailwindcss(), wails("./bindings")],
-  resolve: { alias },
+  // `@/` → `src/`，与 tsconfig.json 的 paths 保持一致
+  resolve: { alias: { "@": path.resolve(import.meta.dirname, "./src") } },
 });

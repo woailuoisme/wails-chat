@@ -1,0 +1,412 @@
+{
+  "app": {
+    "name": "Starter Desktop",
+    "subtitle": "本地密钥 · 系统钥匙串",
+    "skipToContent": "跳到主内容"
+  },
+  "settings": {
+    "tabs": {
+      "general": {
+        "label": "通用",
+        "description": "桌面行为、全局唤起与系统集成"
+      },
+      "application": {
+        "label": "应用",
+        "description": "输入方式、下载目录与本地数据"
+      },
+      "appearance": {
+        "label": "外观",
+        "description": "主题、字号、代码字体与阅读宽度"
+      },
+      "shortcuts": {
+        "label": "快捷键",
+        "description": "已实现的键盘操作一览"
+      },
+      "notifications": {
+        "label": "通知",
+        "description": "系统横幅与完成提示音"
+      },
+      "models": {
+        "label": "模型",
+        "description": "Provider 密钥与推理参数"
+      },
+      "projects": {
+        "label": "指令",
+        "description": "注入每次会话的系统提示词"
+      }
+    },
+    "general": {
+      "globalShortcut": {
+        "title": "全局唤起",
+        "description": "在任何应用中按快捷键把窗口拉到前台。",
+        "footnote": "默认关闭：系统级快捷键会抢占其他应用，需手动开启。支持 Alt / Option / CommandOrControl / Shift 与字母、功能键组合。"
+      },
+      "enableShortcut": {
+        "label": "启用全局唤起",
+        "description": "开启后才会向系统注册下面的组合键。"
+      },
+      "shortcutInput": {
+        "label": "全局唤起快捷键"
+      },
+      "integration": {
+        "title": "桌面系统集成"
+      },
+      "launchOnStartup": {
+        "label": "开机自启",
+        "description": "登录 macOS 时自动启动应用。"
+      },
+      "keepOnTop": {
+        "label": "窗口置顶",
+        "description": "让窗口始终浮在其他应用之上。"
+      },
+      "closeToTray": {
+        "label": "关闭窗口时隐藏到托盘",
+        "description": "关闭后进程继续驻留，点击 Dock 图标可重新唤回。"
+      },
+      "language": {
+        "title": "界面语言",
+        "description": "切换界面语言，立即生效。",
+        "aria": "界面语言",
+        "zh": "简体中文",
+        "en": "English"
+      }
+    },
+    "title": "设置",
+    "nav": {
+      "aria": "设置分类"
+    },
+    "appearance": {
+      "theme": {
+        "title": "主题模式",
+        "description": "「跟随系统」会响应 macOS 外观切换。",
+        "dark": "深色",
+        "light": "浅色",
+        "system": "跟随系统"
+      },
+      "fontSize": {
+        "title": "正文字号",
+        "description": "仅作用于对话内容，不改变界面尺寸。",
+        "small": "小",
+        "medium": "中",
+        "large": "大"
+      },
+      "codeFont": {
+        "title": "代码字体",
+        "description": "应用于代码块、Artifacts 代码视图与消息输入框。"
+      },
+      "chatWidth": {
+        "title": "对话宽度",
+        "description": "内容区最大宽度，影响长表格与代码块的可读性。",
+        "standard": "标准",
+        "wide": "宽",
+        "full": "全宽"
+      },
+      "preview": {
+        "title": "字号预览",
+        "description": "下方为对话区的实际渲染效果。",
+        "body": "正文字号预览：Rust 通过借用检查器在编译期排除数据竞争，无需运行时 GC。"
+      }
+    },
+    "shortcuts": {
+      "title": "键盘快捷键",
+      "description": "以下快捷键均已接入真实行为。",
+      "scope": {
+        "app": "应用内",
+        "system": "系统级"
+      },
+      "actions": {
+        "newChat": "新建会话",
+        "palette": "命令面板 / 搜索",
+        "settings": "设置",
+        "toggleSidebar": "折叠 / 展开侧边栏",
+        "toggleArtifacts": "切换 Artifacts 分栏",
+        "send": "发送消息",
+        "newline": "在输入框内换行",
+        "stop": "打断正在生成的回复",
+        "global": "全局唤起窗口",
+        "globalDisabled": "全局唤起窗口（未启用）"
+      }
+    },
+    "application": {
+      "sendKey": {
+        "title": "发送方式",
+        "description": "选择提交消息的按键组合；换行始终为 ⇧ + Enter。",
+        "aria": "发送消息按键",
+        "enter": "Enter（↵）",
+        "metaEnter": "⌘ + Enter"
+      },
+      "drafts": {
+        "label": "保留草稿",
+        "description": "切换会话时记住尚未发送的输入内容。"
+      },
+      "download": {
+        "title": "下载目录",
+        "description": "Artifacts 导出与代码下载保存到该路径。",
+        "footnote": "支持 ~ 前缀；目录不存在时会自动创建。",
+        "aria": "下载目录路径"
+      },
+      "reset": {
+        "title": "重置本地数据",
+        "description": "清空全部会话、消息与草稿。API Key 保存在系统钥匙串中，不受影响。",
+        "action": "清空全部会话",
+        "cleared": "已清空",
+        "confirmTitle": "确认清空全部会话？",
+        "confirmBody": "该操作会删除本机保存的所有对话记录，且无法撤销。",
+        "confirmAction": "确认清空"
+      }
+    },
+    "notifications": {
+      "title": "完成提醒",
+      "system": {
+        "label": "系统通知",
+        "description": "回复完成且窗口不在前台时发送 macOS 通知。"
+      },
+      "sound": {
+        "label": "完成提示音",
+        "description": "生成结束时播放一声轻提示。"
+      }
+    },
+    "projects": {
+      "title": "全局系统指令",
+      "description": "每次请求都会作为 system message 注入，用于统一模型的语气与格式。",
+      "footnote": "留空则不发送 system message。修改即时生效，无需重启。",
+      "aria": "系统指令",
+      "placeholder": "例如：始终使用简体中文回答，代码块标注语言。"
+    },
+    "models": {
+      "providers": {
+        "openrouter": {
+          "title": "OpenRouter（推荐）",
+          "description": "一个 Key 访问 Claude、GPT、Gemini、DeepSeek 等数百款模型，含免费端点。"
+        },
+        "deepseek": {
+          "title": "DeepSeek 官方直连",
+          "description": "低延迟、低成本，原生支持思考模式切换。"
+        },
+        "openai": {
+          "title": "OpenAI 直连",
+          "description": "直接使用 OpenAI 官方端点。"
+        },
+        "custom": {
+          "title": "本地 / 自建端点",
+          "description": "兼容 OpenAI 协议的服务，例如 Ollama、vLLM、LM Studio。"
+        },
+        "keychainNote": "密钥保存在 macOS 钥匙串，不会写入 WebView 的 localStorage。"
+      },
+      "reasoning": {
+        "title": "推理参数",
+        "description": "控制模型在回答前的思考预算。"
+      },
+      "thinking": {
+        "label": "启用深度思考",
+        "description": "关闭后模型直接作答，延迟更低。"
+      },
+      "effort": {
+        "label": "推理强度",
+        "description": "调整后会自动套用对应的思考 Token 预算。",
+        "low": "低",
+        "medium": "中",
+        "high": "高"
+      },
+      "budget": "思考 Token 预算",
+      "descriptions": {
+        "openrouter_free": "官方智能免费路由，自动匹配可用免费端点，支持多模态与工具，0 Token 成本",
+        "google_gemini_2_0_flash_exp_free": "Google 极速多模态视觉模型，支持图片理解与毫秒级流式响应",
+        "meta_llama_llama_3_2_11b_vision_instruct_free": "Meta 开源多模态视觉模型，擅长图表、UI 截图与自然图像问答",
+        "deepseek_deepseek_r1_free": "开源深度推理模型免费版，展示完整思维链推演",
+        "meta_llama_llama_3_3_70b_instruct_free": "Meta 开源 70B 旗舰指令模型，综合能力强",
+        "qwen_qwen_2_5_coder_32b_instruct_free": "通义千问 32B 代码专用模型，擅长生成、重构与架构设计",
+        "deepseek_flash": "DeepSeek 官方高性价比模型，1M 上下文，支持视觉与思考模式切换",
+        "deepseek_v4_pro": "DeepSeek 官方旗舰模型，1M 上下文，最强推理与复杂任务规划",
+        "anthropic_claude_3_7_sonnet": "Anthropic 混合推理模型，可显式控制思考预算，编码与长文表现稳定",
+        "anthropic_claude_3_5_sonnet": "Anthropic 上一代主力模型，稳定、通用、指令跟随好",
+        "anthropic_claude_3_5_haiku": "Anthropic 轻量快速模型，低延迟对话与摘要",
+        "openai_gpt_4o": "OpenAI 旗舰多模态模型，视觉理解与通用任务均衡",
+        "openai_o3_mini": "OpenAI 小型推理模型，数学与代码推理成本更低"
+      }
+    },
+    "description": "调整桌面行为、外观、模型接入与指令"
+  },
+  "common": {
+    "cancel": "取消",
+    "save": "保存",
+    "copy": "复制",
+    "copied": "已复制",
+    "download": "下载"
+  },
+  "nav": {
+    "collapseSidebar": "折叠侧边栏",
+    "expandSidebar": "展开侧边栏",
+    "collapseSidebarShortcut": "折叠侧边栏 (⌘B)",
+    "expandSidebarShortcut": "展开侧边栏 (⌘B)",
+    "modelLabel": "模型：",
+    "modelUnset": "未指定",
+    "renameConversation": "重命名会话",
+    "deleteConversation": "删除会话",
+    "openArtifacts": "打开 Artifacts 面板",
+    "closeArtifacts": "关闭 Artifacts 面板",
+    "openArtifactsShortcut": "打开 Artifacts 面板 (⌘J)",
+    "closeArtifactsShortcut": "关闭 Artifacts 面板 (⌘J)",
+    "copyTranscript": "复制整段对话",
+    "copyAsMarkdown": "复制为 Markdown",
+    "copyAsPlainText": "复制为纯文本",
+    "renameTitle": "重命名会话",
+    "renameDescription": "输入新的会话标题，回车保存。",
+    "search": "搜索",
+    "projectInstructions": "项目指令",
+    "preferences": "偏好设置",
+    "conversationTitle": "会话标题"
+  },
+  "transcript": {
+    "defaultTitle": "对话",
+    "roles": {
+      "user": "我",
+      "assistant": "助手",
+      "system": "系统"
+    }
+  },
+  "attachments": {
+    "tooLarge": "{{name}} 超过 {{size}}MB，已跳过",
+    "readFailed": "{{name}} 读取失败",
+    "missing": "附件已丢失",
+    "add": "添加附件"
+  },
+  "composer": {
+    "modelAria": "当前模型 {{model}}，推理强度 {{effort}}",
+    "modelsHeading": "模型",
+    "visionBadge": "支持多模态视觉",
+    "usage": "账户用量"
+  },
+  "errors": {
+    "panel": {
+      "chat": "对话区",
+      "artifacts": "Artifacts 面板"
+    },
+    "pageTitle": "页面出错了",
+    "pageBody": "桌面视图中发生了未预期的错误。",
+    "reload": "重新加载应用",
+    "generationFailedTitle": "生成失败",
+    "generationFailed": "生成失败，请检查模型与密钥后重试。",
+    "panelFailed": "{{label}}渲染失败",
+    "panelIsolated": "已隔离该区域，其余功能仍可正常使用。切换会话或收起面板后会自动重试。",
+    "threadNotFound": "未找到会话 {{id}}"
+  },
+  "palette": {
+    "title": "搜索 Starter",
+    "description": "搜索会话、Artifacts 与命令",
+    "placeholder": "搜索会话、Artifacts 或命令（⌘K）…",
+    "empty": "没有匹配结果。",
+    "actions": "操作",
+    "newChat": "新建会话",
+    "openSettings": "打开设置与 API Key",
+    "conversations": "会话",
+    "newConversation": "新会话",
+    "switchModel": "切换模型",
+    "current": "当前"
+  },
+  "artifacts": {
+    "empty": "还没有生成过 Artifact",
+    "history": "版本历史",
+    "version": "版本 {{version}}",
+    "viewMode": "查看方式",
+    "fullscreen": "全屏",
+    "exitFullscreen": "退出全屏",
+    "closePanel": "关闭面板",
+    "closePanelAria": "关闭 Artifacts 面板",
+    "lines": "行",
+    "saveTo": "保存到 {{path}}",
+    "saving": "保存中",
+    "savedTo": "已保存到 {{path}}",
+    "mermaid": {
+      "title": "Mermaid 图表",
+      "zoomIn": "放大",
+      "zoomOut": "缩小",
+      "resetZoom": "重置缩放",
+      "failed": "Mermaid 渲染失败，已降级为源码视图"
+    },
+    "sandbox": {
+      "device": {
+        "desktop": "桌面视图",
+        "tablet": "平板视图 (768px)",
+        "mobile": "手机视图 (375px)"
+      },
+      "deviceAria": "预览设备尺寸",
+      "exportTitle": "导出当前预览为 HTML 文件",
+      "export": "导出",
+      "toggleConsole": "展开/收起控制台",
+      "console": "控制台 ({{count}})",
+      "reload": "重新加载预览",
+      "frameTitle": "Artifacts 沙箱预览",
+      "consoleAria": "沙箱控制台输出",
+      "consoleEmpty": "暂无控制台输出或错误。"
+    }
+  },
+  "chat": {
+    "newThreadTitle": "新会话"
+  },
+  "time": {
+    "justNow": "刚刚"
+  },
+  "thread": {
+    "loadingConversation": "正在加载对话",
+    "placeholder": "发送消息…",
+    "messageInput": "消息输入框",
+    "copy": "复制",
+    "loadingEarlier": "正在加载更早的消息",
+    "loadEarlier": "加载更早的消息",
+    "scrollToBottom": "滚动到底部",
+    "voiceInput": "语音输入",
+    "startVoiceInput": "开始语音输入",
+    "stopDictation": "停止听写",
+    "stopVoiceInput": "停止语音输入",
+    "send": "发送消息",
+    "resume": "继续生成",
+    "cancelSending": "取消发送",
+    "stop": "停止生成",
+    "assistantWorking": "助手正在处理",
+    "helpful": "有帮助",
+    "notHelpful": "没帮助",
+    "refresh": "重新生成",
+    "more": "更多",
+    "edit": "编辑",
+    "previous": "上一个",
+    "next": "下一个",
+    "youSaid": "你说",
+    "assistantSaid": "助手说",
+    "assistantSpeaking": "助手正在朗读",
+    "voiceConversation": "语音对话",
+    "welcome": "今天想聊点什么？"
+  },
+  "threadList": {
+    "newChat": "新建会话",
+    "search": "搜索会话",
+    "today": "今天",
+    "earlier": "更早",
+    "rename": "重命名会话",
+    "loading": "正在加载会话",
+    "more": "更多操作",
+    "running": "进行中",
+    "yesterday": "昨天",
+    "empty": "暂无会话",
+    "newThread": "新会话",
+    "archive": "归档",
+    "delete": "删除"
+  },
+  "image": {
+    "zoom": "点击放大图片",
+    "zoomed": "放大的图片",
+    "closeZoom": "关闭放大图片",
+    "regenerate": "重新生成图片",
+    "download": "下载图片",
+    "copy": "复制图片"
+  },
+  "reasoning": {
+    "label": "深度思考"
+  },
+  "file": {
+    "generic": "文件",
+    "text": "文本文件",
+    "typed": "{{type}} 文件",
+    "unnamed": "未命名文件"
+  }
+}

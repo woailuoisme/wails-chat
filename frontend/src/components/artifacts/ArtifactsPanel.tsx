@@ -1,5 +1,6 @@
 import { ChevronDown, Code2, Eye, History, Layers, Maximize2, Minimize2, X } from "lucide-react";
 import * as React from "react";
+import { useTranslation } from "react-i18next";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -44,6 +45,7 @@ function ArtifactBody({ artifact, mode }: { artifact: ArtifactItem; mode: ViewMo
 }
 
 export function ArtifactsPanel() {
+  const { t } = useTranslation();
   const activeArtifact = useArtifactsStore((state) => state.activeArtifact);
   const isOpen = useArtifactsStore((state) => state.isOpen);
   const viewMode = useArtifactsStore((state) => state.viewMode);
@@ -95,7 +97,7 @@ export function ArtifactsPanel() {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="start" className="w-40">
-                <DropdownMenuLabel className="text-xs">版本历史</DropdownMenuLabel>
+                <DropdownMenuLabel className="text-xs">{t("artifacts.history")}</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 {activeArtifact.versions.map((version) => (
                   <DropdownMenuItem
@@ -105,7 +107,7 @@ export function ArtifactsPanel() {
                       activeArtifact.currentVersion === version.version ? "bg-muted font-bold" : ""
                     }`}
                   >
-                    版本 {version.version}
+                    {t("artifacts.version", { version: version.version })}
                   </DropdownMenuItem>
                 ))}
               </DropdownMenuContent>
@@ -119,7 +121,7 @@ export function ArtifactsPanel() {
           {previewable && (
             <div
               role="group"
-              aria-label="查看方式"
+              aria-label={t("artifacts.viewMode")}
               className="bg-muted/60 border-border/40 flex items-center rounded-lg border p-0.5"
             >
               <Button
@@ -159,8 +161,8 @@ export function ArtifactsPanel() {
             size="icon-xs"
             onClick={() => setIsFullscreen(!isFullscreen)}
             className="text-muted-foreground hover:text-foreground h-7 w-7"
-            title={isFullscreen ? "退出全屏" : "全屏"}
-            aria-label={isFullscreen ? "退出全屏" : "全屏"}
+            title={t(isFullscreen ? "artifacts.exitFullscreen" : "artifacts.fullscreen")}
+            aria-label={t(isFullscreen ? "artifacts.exitFullscreen" : "artifacts.fullscreen")}
           >
             {isFullscreen ? (
               <Minimize2 className="size-3.5" aria-hidden="true" />
@@ -175,8 +177,8 @@ export function ArtifactsPanel() {
             size="icon-xs"
             onClick={closeArtifact}
             className="text-muted-foreground hover:text-foreground h-7 w-7"
-            title="关闭面板"
-            aria-label="关闭 Artifacts 面板"
+            title={t("artifacts.closePanel")}
+            aria-label={t("artifacts.closePanelAria")}
           >
             <X className="size-4" aria-hidden="true" />
           </Button>

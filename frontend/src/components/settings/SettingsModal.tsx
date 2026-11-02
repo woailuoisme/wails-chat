@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useTranslation } from "react-i18next";
 
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
 import { useSettingsStore } from "@/lib/store/settings-store";
@@ -37,6 +38,7 @@ export function SettingsModal() {
   const setActiveSettingsTab = useSettingsStore((state) => state.setActiveSettingsTab);
 
   const activeTab = normalizeSettingsTab(activeSettingsTab);
+  const { t } = useTranslation();
   const tabMeta = getSettingsTab(activeTab);
   const ActivePanel = TAB_PANELS[activeTab];
 
@@ -48,18 +50,16 @@ export function SettingsModal() {
   return (
     <Dialog open={isSettingsOpen} onOpenChange={setIsSettingsOpen}>
       <DialogContent className="border-border/70 bg-card w-[92vw] max-w-3xl gap-0 overflow-hidden rounded-2xl p-0 shadow-2xl sm:max-w-3xl">
-        <DialogTitle className="sr-only">设置</DialogTitle>
-        <DialogDescription className="sr-only">
-          调整桌面行为、外观、模型接入与指令
-        </DialogDescription>
+        <DialogTitle className="sr-only">{t("settings.title")}</DialogTitle>
+        <DialogDescription className="sr-only">{t("settings.description")}</DialogDescription>
 
         <div className="flex h-140">
           <SettingsNav activeTab={activeTab} onSelect={handleSelectTab} />
 
           <div className="flex-1 overflow-y-auto p-6 pr-10">
             <header className="mb-5 space-y-1">
-              <h2 className="text-foreground text-sm font-semibold">{tabMeta.label}</h2>
-              <p className="text-muted-foreground text-xs">{tabMeta.description}</p>
+              <h2 className="text-foreground text-sm font-semibold">{t(tabMeta.labelKey)}</h2>
+              <p className="text-muted-foreground text-xs">{t(tabMeta.descriptionKey)}</p>
             </header>
 
             <ActivePanel />

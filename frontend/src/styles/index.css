@@ -1,0 +1,6 @@
+/* Tailwind 入口（自有文件）：global.css 由 shadcn 生成，不放应用级指令 */
+@import "../global.css";
+
+/* Streamdown 的高亮 token 用任意值类上色，不扫描它的产物就会全部 inherit（看起来像没高亮） */
+@source "../../node_modules/streamdown/dist";
+@source "../../node_modules/@streamdown/code/dist";

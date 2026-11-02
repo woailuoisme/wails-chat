@@ -1,6 +1,7 @@
 import { AlertTriangle, RotateCcw, ZoomIn, ZoomOut } from "lucide-react";
 import mermaid from "mermaid";
 import * as React from "react";
+import { useTranslation } from "react-i18next";
 
 import { Button } from "@/components/ui/button";
 
@@ -21,6 +22,7 @@ interface MermaidViewerProps {
 }
 
 export function MermaidViewer({ code }: MermaidViewerProps) {
+  const { t } = useTranslation();
   const [svgHtml, setSvgHtml] = React.useState("");
   const [error, setError] = React.useState<string | null>(null);
   const [zoom, setZoom] = React.useState(1);
@@ -55,15 +57,15 @@ export function MermaidViewer({ code }: MermaidViewerProps) {
   return (
     <div className="bg-background relative flex h-full flex-col">
       <div className="border-border/50 bg-muted/20 flex items-center justify-between border-b px-4 py-2">
-        <span className="text-muted-foreground text-xs">Mermaid 图表</span>
+        <span className="text-muted-foreground text-xs">{t("artifacts.mermaid.title")}</span>
         <div className="flex items-center gap-1">
           <Button
             variant="ghost"
             size="icon-xs"
             onClick={() => setZoom((current) => Math.min(current + 0.2, 2.5))}
             className="text-muted-foreground hover:text-foreground h-7 w-7"
-            aria-label="放大"
-            title="放大"
+            aria-label={t("artifacts.mermaid.zoomIn")}
+            title={t("artifacts.mermaid.zoomIn")}
           >
             <ZoomIn className="size-3.5" aria-hidden="true" />
           </Button>
@@ -72,8 +74,8 @@ export function MermaidViewer({ code }: MermaidViewerProps) {
             size="icon-xs"
             onClick={() => setZoom((current) => Math.max(current - 0.2, 0.4))}
             className="text-muted-foreground hover:text-foreground h-7 w-7"
-            aria-label="缩小"
-            title="缩小"
+            aria-label={t("artifacts.mermaid.zoomOut")}
+            title={t("artifacts.mermaid.zoomOut")}
           >
             <ZoomOut className="size-3.5" aria-hidden="true" />
           </Button>
@@ -82,8 +84,8 @@ export function MermaidViewer({ code }: MermaidViewerProps) {
             size="icon-xs"
             onClick={() => setZoom(1)}
             className="text-muted-foreground hover:text-foreground h-7 w-7"
-            aria-label="重置缩放"
-            title="重置缩放"
+            aria-label={t("artifacts.mermaid.resetZoom")}
+            title={t("artifacts.mermaid.resetZoom")}
           >
             <RotateCcw className="size-3.5" aria-hidden="true" />
           </Button>
@@ -100,7 +102,7 @@ export function MermaidViewer({ code }: MermaidViewerProps) {
               className="text-destructive flex items-center gap-2 text-xs"
             >
               <AlertTriangle className="size-4 shrink-0" aria-hidden="true" />
-              <span className="font-semibold">Mermaid 渲染失败，已降级为源码视图</span>
+              <span className="font-semibold">{t("artifacts.mermaid.failed")}</span>
             </div>
             <pre className="border-border/60 bg-muted/30 text-muted-foreground overflow-auto rounded-lg border p-3 font-mono text-[11px] whitespace-pre-wrap">
               {code}

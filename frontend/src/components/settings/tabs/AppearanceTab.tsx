@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next";
+
 import {
   CODE_FONT_FAMILIES,
   useSettingsStore,
@@ -9,27 +11,12 @@ import {
 import { SegmentedControl } from "../SegmentedControl";
 import { SettingCard } from "../SettingCard";
 
-const THEME_OPTIONS: ReadonlyArray<{ value: AppTheme; label: string }> = [
-  { value: "dark", label: "深色" },
-  { value: "light", label: "浅色" },
-  { value: "system", label: "跟随系统" },
-];
-
-const FONT_SIZE_OPTIONS: ReadonlyArray<{ value: AppFontSize; label: string }> = [
-  { value: "small", label: "小" },
-  { value: "medium", label: "中" },
-  { value: "large", label: "大" },
-];
-
-const CHAT_WIDTH_OPTIONS: ReadonlyArray<{ value: ChatWidth; label: string }> = [
-  { value: "standard", label: "标准" },
-  { value: "wide", label: "宽" },
-  { value: "full", label: "全宽" },
-];
-
-const CODE_FONT_OPTIONS = CODE_FONT_FAMILIES.map((font) => ({ value: font, label: font }));
+const THEME_VALUES: ReadonlyArray<AppTheme> = ["dark", "light", "system"];
+const FONT_SIZE_VALUES: ReadonlyArray<AppFontSize> = ["small", "medium", "large"];
+const CHAT_WIDTH_VALUES: ReadonlyArray<ChatWidth> = ["standard", "wide", "full"];
 
 export function AppearanceTab() {
+  const { t } = useTranslation();
   const theme = useSettingsStore((state) => state.theme);
   const setTheme = useSettingsStore((state) => state.setTheme);
   const fontSize = useSettingsStore((state) => state.fontSize);
@@ -39,52 +26,81 @@ export function AppearanceTab() {
   const chatWidth = useSettingsStore((state) => state.chatWidth);
   const setChatWidth = useSettingsStore((state) => state.setChatWidth);
 
+  const themeOptions = THEME_VALUES.map((value) => ({
+    value,
+    label: t(`settings.appearance.theme.${value}`),
+  }));
+  const fontSizeOptions = FONT_SIZE_VALUES.map((value) => ({
+    value,
+    label: t(`settings.appearance.fontSize.${value}`),
+  }));
+  const chatWidthOptions = CHAT_WIDTH_VALUES.map((value) => ({
+    value,
+    label: t(`settings.appearance.chatWidth.${value}`),
+  }));
+  const codeFontOptions = CODE_FONT_FAMILIES.map((font) => ({ value: font, label: font }));
+
   return (
     <div className="space-y-4">
-      <SettingCard title="主题模式" description="「跟随系统」会响应 macOS 外观切换。">
+      <SettingCard
+        title={t("settings.appearance.theme.title")}
+        description={t("settings.appearance.theme.description")}
+      >
         <SegmentedControl
-          ariaLabel="主题模式"
+          ariaLabel={t("settings.appearance.theme.title")}
           value={theme}
-          options={THEME_OPTIONS}
+          options={themeOptions}
           onChange={setTheme}
         />
       </SettingCard>
 
-      <SettingCard title="正文字号" description="仅作用于对话内容，不改变界面尺寸。">
+      <SettingCard
+        title={t("settings.appearance.fontSize.title")}
+        description={t("settings.appearance.fontSize.description")}
+      >
         <SegmentedControl
-          ariaLabel="正文字号"
+          ariaLabel={t("settings.appearance.fontSize.title")}
           value={fontSize}
-          options={FONT_SIZE_OPTIONS}
+          options={fontSizeOptions}
           onChange={setFontSize}
         />
       </SettingCard>
 
-      <SettingCard title="代码字体" description="应用于代码块、Artifacts 代码视图与消息输入框。">
+      <SettingCard
+        title={t("settings.appearance.codeFont.title")}
+        description={t("settings.appearance.codeFont.description")}
+      >
         <SegmentedControl
-          ariaLabel="代码字体"
+          ariaLabel={t("settings.appearance.codeFont.title")}
           value={codeFont}
-          options={CODE_FONT_OPTIONS}
+          options={codeFontOptions}
           onChange={setCodeFont}
           className="flex-wrap"
         />
       </SettingCard>
 
-      <SettingCard title="对话宽度" description="内容区最大宽度，影响长表格与代码块的可读性。">
+      <SettingCard
+        title={t("settings.appearance.chatWidth.title")}
+        description={t("settings.appearance.chatWidth.description")}
+      >
         <SegmentedControl
-          ariaLabel="对话宽度"
+          ariaLabel={t("settings.appearance.chatWidth.title")}
           value={chatWidth}
-          options={CHAT_WIDTH_OPTIONS}
+          options={chatWidthOptions}
           onChange={setChatWidth}
         />
       </SettingCard>
 
-      <SettingCard title="字号预览" description="下方为对话区的实际渲染效果。">
+      <SettingCard
+        title={t("settings.appearance.preview.title")}
+        description={t("settings.appearance.preview.description")}
+      >
         <div className="border-border/50 bg-background space-y-2 rounded-lg border p-3">
           <p
             className="text-foreground leading-relaxed"
             style={{ fontSize: "var(--chat-font-size)" }}
           >
-            正文字号预览：Rust 通过借用检查器在编译期排除数据竞争，无需运行时 GC。
+            {t("settings.appearance.preview.body")}
           </p>
           <code
             className="text-muted-foreground block font-mono"

@@ -2,19 +2,6 @@ import * as React from "react";
 
 import { loadHighlighter } from "@/lib/highlighter";
 
-/**
- * 流式友好的增量语法高亮。
- *
- * 设计要点：
- * 1. 高亮器按语言懒加载，加载完成前返回纯文本，不阻塞渲染；
- * 2. 已完成的整行只 tokenize 一次，后续只从上一行的 grammar state 续接，
- *    因此流式追加内容时的工作量与「新增行数」成正比，而非「全文长度」；
- * 3. 末行仍在变动，每帧重新 tokenize（成本可控）。
- *
- * 关于渲染期 `setDone`：这是 React 文档允许的「派生状态」写法——
- * 条件严格限制为 `next !== done`，即只在增量真正推进时提交，
- * 下一次渲染即可收敛，不会形成无限循环。
- */
 export function useHighlightedCode(value: string, language: string) {
   // A trailing newline would render as an extra empty line.
   const code = value.endsWith("\n") ? value.slice(0, -1) : value;

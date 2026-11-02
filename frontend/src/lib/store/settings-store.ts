@@ -17,12 +17,6 @@ export const REASONING_BUDGET_MAP: Record<ReasoningEffort, number> = {
   high: 16384,
 };
 
-export const CHAT_WIDTH_CLASSES: Record<ChatWidth, string> = {
-  standard: "max-w-3xl",
-  wide: "max-w-5xl",
-  full: "max-w-6xl xl:max-w-7xl",
-};
-
 /** 代码字体候选项，与 SettingsModal 的代码字体选择器保持一致 */
 export const CODE_FONT_FAMILIES = ["JetBrains Mono", "Fira Code", "ui-monospace"] as const;
 
@@ -33,12 +27,6 @@ export function resolveCodeFontStack(font: string): string {
   if (font === "ui-monospace") return "ui-monospace, SFMono-Regular, Menlo, monospace";
   return `${font}, ui-monospace, SFMono-Regular, Menlo, monospace`;
 }
-
-/**
- * 界面语言目前只支持「跟随硬编码双语文案」，完整 i18n 尚未接入。
- * 该常量用于在 UI 上把语言选择器置为禁用态，避免展示不生效的开关。
- */
-export const IS_LANGUAGE_SWITCH_SUPPORTED = false;
 
 /** store 字段 → Keychain provider 的映射 */
 const SECRET_FIELDS: ReadonlyArray<[ApiKeyProvider, keyof SettingsState]> = [

@@ -218,6 +218,9 @@ export async function executeStreamChat(params: StreamChatParams) {
       } else if (part.type === "reasoning-delta") {
         fullReasoning += part.text;
         onReasoning?.(part.text);
+      } else if (part.type === "error") {
+        // fullStream 把失败当事件发出来，吞掉会让上层以为运行成功
+        throw part.error instanceof Error ? part.error : new Error(String(part.error));
       }
     }
 

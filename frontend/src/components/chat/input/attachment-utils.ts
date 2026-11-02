@@ -1,3 +1,4 @@
+import i18n from "@/i18n";
 import type { ChatAttachment } from "@/lib/ai/types";
 
 /** 附件体积上限：图片走 base64 会膨胀约 4/3，过大会拖慢一次请求 */
@@ -28,7 +29,13 @@ export async function readFileAsAttachment(file: File): Promise<AttachmentResult
 
   if (isImage) {
     if (file.size > MAX_IMAGE_BYTES) {
-      return { ok: false, reason: `${file.name} 超过 ${MAX_IMAGE_BYTES / 1024 / 1024}MB，已跳过` };
+      return {
+        ok: false,
+        reason: i18n.t("attachments.tooLarge", {
+          name: file.name,
+          size: MAX_IMAGE_BYTES / 1024 / 1024,
+        }),
+      };
     }
 
     return new Promise((resolve) => {
@@ -49,7 +56,7 @@ export async function readFileAsAttachment(file: File): Promise<AttachmentResult
       });
 
       reader.addEventListener("error", () => {
-        resolve({ ok: false, reason: `${file.name} 读取失败` });
+        resolve({ ok: false, reason: i18n.t("attachments.readFailed", { name: file.name }) });
       });
 
       reader.readAsDataURL(file);
@@ -60,7 +67,13 @@ export async function readFileAsAttachment(file: File): Promise<AttachmentResult
 
   if (!readable) {
     if (file.size > MAX_TEXT_BYTES) {
-      return { ok: false, reason: `${file.name} 超过 ${MAX_TEXT_BYTES / 1024 / 1024}MB，已跳过` };
+      return {
+        ok: false,
+        reason: i18n.t("attachments.tooLarge", {
+          name: file.name,
+          size: MAX_TEXT_BYTES / 1024 / 1024,
+        }),
+      };
     }
 
     return {
@@ -93,7 +106,7 @@ export async function readFileAsAttachment(file: File): Promise<AttachmentResult
     });
 
     reader.addEventListener("error", () => {
-      resolve({ ok: false, reason: `${file.name} 读取失败` });
+      resolve({ ok: false, reason: i18n.t("attachments.readFailed", { name: file.name }) });
     });
 
     reader.readAsText(file);

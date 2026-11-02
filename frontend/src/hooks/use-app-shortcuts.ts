@@ -1,3 +1,4 @@
+import { useAui } from "@assistant-ui/react";
 import * as React from "react";
 
 import { useArtifactsStore } from "@/lib/store/artifacts-store";
@@ -17,6 +18,8 @@ interface AppShortcutHandlers {
  * （Esc 打断生成由 ChatArea 处理，因为它需要 AbortController 引用。）
  */
 export function useAppShortcuts({ onToggleSidebar }: AppShortcutHandlers): void {
+  const aui = useAui();
+
   React.useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (!event.metaKey && !event.ctrlKey) return;
@@ -24,8 +27,7 @@ export function useAppShortcuts({ onToggleSidebar }: AppShortcutHandlers): void 
       switch (event.key.toLowerCase()) {
         case "n": {
           event.preventDefault();
-          const { selectedModelId } = useSettingsStore.getState();
-          useChatStore.getState().createConversation(selectedModelId);
+          aui.threads.switchToNewThread();
           break;
         }
         case "k": {
@@ -57,5 +59,5 @@ export function useAppShortcuts({ onToggleSidebar }: AppShortcutHandlers): void 
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [onToggleSidebar]);
+  }, [aui, onToggleSidebar]);
 }

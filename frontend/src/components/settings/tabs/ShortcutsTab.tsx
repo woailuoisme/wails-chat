@@ -1,61 +1,97 @@
 import * as React from "react";
+import { useTranslation } from "react-i18next";
 
 import { useSettingsStore } from "@/lib/store/settings-store";
 
 import { SettingCard } from "../SettingCard";
 
 interface ShortcutEntry {
-  action: string;
+  /** i18n key */
+  actionKey: string;
   keys: string[];
   /** 系统级快捷键由 Wails 全局注册，即使窗口失焦也生效 */
-  scope: "应用内" | "系统级";
+  scopeKey: "settings.shortcuts.scope.app" | "settings.shortcuts.scope.system";
 }
 
 export function ShortcutsTab() {
+  const { t } = useTranslation();
   const sendKey = useSettingsStore((state) => state.sendKey);
   const globalShortcut = useSettingsStore((state) => state.globalShortcut);
   const globalShortcutEnabled = useSettingsStore((state) => state.globalShortcutEnabled);
 
   const shortcuts = React.useMemo<ShortcutEntry[]>(
     () => [
-      { action: "新建会话", keys: ["⌘", "N"], scope: "应用内" },
-      { action: "命令面板 / 搜索", keys: ["⌘", "K"], scope: "应用内" },
-      { action: "设置", keys: ["⌘", ","], scope: "应用内" },
-      { action: "折叠 / 展开侧边栏", keys: ["⌘", "B"], scope: "应用内" },
-      { action: "切换 Artifacts 分栏", keys: ["⌘", "J"], scope: "应用内" },
       {
-        action: "发送消息",
-        keys: sendKey === "enter" ? ["Enter"] : ["⌘", "Enter"],
-        scope: "应用内",
+        actionKey: "settings.shortcuts.actions.newChat",
+        keys: ["⌘", "N"],
+        scopeKey: "settings.shortcuts.scope.app",
       },
-      { action: "在输入框内换行", keys: ["⇧", "Enter"], scope: "应用内" },
-      { action: "打断正在生成的回复", keys: ["Esc"], scope: "应用内" },
       {
-        // 未开启时如实显示数组，避免看起来已经生效
-        action: globalShortcutEnabled ? "全局唤起窗口" : "全局唤起窗口（未启用）",
+        actionKey: "settings.shortcuts.actions.palette",
+        keys: ["⌘", "K"],
+        scopeKey: "settings.shortcuts.scope.app",
+      },
+      {
+        actionKey: "settings.shortcuts.actions.settings",
+        keys: ["⌘", ","],
+        scopeKey: "settings.shortcuts.scope.app",
+      },
+      {
+        actionKey: "settings.shortcuts.actions.toggleSidebar",
+        keys: ["⌘", "B"],
+        scopeKey: "settings.shortcuts.scope.app",
+      },
+      {
+        actionKey: "settings.shortcuts.actions.toggleArtifacts",
+        keys: ["⌘", "J"],
+        scopeKey: "settings.shortcuts.scope.app",
+      },
+      {
+        actionKey: "settings.shortcuts.actions.send",
+        keys: sendKey === "enter" ? ["Enter"] : ["⌘", "Enter"],
+        scopeKey: "settings.shortcuts.scope.app",
+      },
+      {
+        actionKey: "settings.shortcuts.actions.newline",
+        keys: ["⇧", "Enter"],
+        scopeKey: "settings.shortcuts.scope.app",
+      },
+      {
+        actionKey: "settings.shortcuts.actions.stop",
+        keys: ["Esc"],
+        scopeKey: "settings.shortcuts.scope.app",
+      },
+      {
+        actionKey: globalShortcutEnabled
+          ? "settings.shortcuts.actions.global"
+          : "settings.shortcuts.actions.globalDisabled",
         keys: [globalShortcut],
-        scope: "系统级",
+        scopeKey: "settings.shortcuts.scope.system",
       },
     ],
     [globalShortcut, globalShortcutEnabled, sendKey],
   );
 
   return (
-    <SettingCard title="键盘快捷键" description="以下快捷键均已接入真实行为。" className="p-0">
+    <SettingCard
+      title={t("settings.shortcuts.title")}
+      description={t("settings.shortcuts.description")}
+      className="p-0"
+    >
       <div className="divide-border/40 divide-y">
         {shortcuts.map((shortcut) => (
           <div
-            key={shortcut.action}
+            key={shortcut.actionKey}
             className="flex items-center justify-between gap-3 px-4 py-2.5 text-xs"
           >
             <div className="min-w-0">
-              <div className="text-foreground font-medium">{shortcut.action}</div>
-              <div className="text-muted-foreground text-[10px]">{shortcut.scope}</div>
+              <div className="text-foreground font-medium">{t(shortcut.actionKey)}</div>
+              <div className="text-muted-foreground text-[10px]">{t(shortcut.scopeKey)}</div>
             </div>
             <div className="flex shrink-0 items-center gap-1">
               {shortcut.keys.map((key, index) => (
                 <kbd
-                  key={`${shortcut.action}-${index}`}
+                  key={`${shortcut.actionKey}-${index}`}
                   className="border-border/70 bg-background text-muted-foreground rounded border px-1.5 py-0.5 font-mono text-[11px] font-semibold shadow-2xs"
                 >
                   {key}

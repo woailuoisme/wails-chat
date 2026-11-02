@@ -1,9 +1,12 @@
+import { useTranslation } from "react-i18next";
+
 import { Switch } from "@/components/ui/switch";
 import { useSettingsStore } from "@/lib/store/settings-store";
 
 import { SettingCard, SettingRow } from "../SettingCard";
 
 export function NotificationsTab() {
+  const { t } = useTranslation();
   const notificationsEnabled = useSettingsStore((state) => state.notificationsEnabled);
   const setNotificationsEnabled = useSettingsStore((state) => state.setNotificationsEnabled);
   const soundEnabled = useSettingsStore((state) => state.soundEnabled);
@@ -11,11 +14,11 @@ export function NotificationsTab() {
 
   return (
     <div className="space-y-4">
-      <SettingCard title="完成提醒">
+      <SettingCard title={t("settings.notifications.title")}>
         <div className="divide-border/40 divide-y">
           <SettingRow
-            label="系统通知"
-            description="回复完成且窗口不在前台时发送 macOS 通知。"
+            label={t("settings.notifications.system.label")}
+            description={t("settings.notifications.system.description")}
             htmlFor="notifications-enabled"
             className="pb-3"
           >
@@ -27,8 +30,8 @@ export function NotificationsTab() {
           </SettingRow>
 
           <SettingRow
-            label="完成提示音"
-            description="生成结束时播放一声轻提示。"
+            label={t("settings.notifications.sound.label")}
+            description={t("settings.notifications.sound.description")}
             htmlFor="sound-enabled"
             className="pt-3"
           >

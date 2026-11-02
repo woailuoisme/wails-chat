@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useTranslation } from "react-i18next";
 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -10,9 +11,9 @@ import { SegmentedControl } from "../SegmentedControl";
 import { SettingCard, SettingRow } from "../SettingCard";
 
 const EFFORT_OPTIONS: ReadonlyArray<{ value: ReasoningEffort; label: string }> = [
-  { value: "low", label: "低" },
-  { value: "medium", label: "中" },
-  { value: "high", label: "高" },
+  { value: "low", label: "low" },
+  { value: "medium", label: "medium" },
+  { value: "high", label: "high" },
 ];
 
 interface ProviderCardProps {
@@ -87,6 +88,7 @@ function ProviderCard({
 }
 
 export function ModelsTab() {
+  const { t } = useTranslation();
   const openrouterApiKey = useSettingsStore((state) => state.openrouterApiKey);
   const setOpenrouterApiKey = useSettingsStore((state) => state.setOpenrouterApiKey);
   const openrouterBaseUrl = useSettingsStore((state) => state.openrouterBaseUrl);
@@ -118,8 +120,8 @@ export function ModelsTab() {
     <div className="space-y-4">
       <ProviderCard
         provider="openrouter"
-        title="OpenRouter（推荐）"
-        description="一个 Key 访问 Claude、GPT、Gemini、DeepSeek 等数百款模型，含免费端点。"
+        title={t("settings.models.providers.openrouter.title")}
+        description={t("settings.models.providers.openrouter.description")}
         keyPlaceholder="sk-or-v1-…"
         apiKey={openrouterApiKey}
         onApiKeyChange={setOpenrouterApiKey}
@@ -127,13 +129,13 @@ export function ModelsTab() {
         onBaseUrlChange={setOpenrouterBaseUrl}
         baseUrlPlaceholder="https://openrouter.ai/api/v1"
         tone="primary"
-        footer="密钥保存在 macOS 钥匙串，不会写入 WebView 的 localStorage。"
+        footer={t("settings.models.providers.keychainNote")}
       />
 
       <ProviderCard
         provider="deepseek"
-        title="DeepSeek 官方直连"
-        description="低延迟、低成本，原生支持思考模式切换。"
+        title={t("settings.models.providers.deepseek.title")}
+        description={t("settings.models.providers.deepseek.description")}
         keyPlaceholder="sk-…"
         apiKey={deepseekApiKey}
         onApiKeyChange={setDeepseekApiKey}
@@ -144,8 +146,8 @@ export function ModelsTab() {
 
       <ProviderCard
         provider="openai"
-        title="OpenAI 直连"
-        description="直接使用 OpenAI 官方端点。"
+        title={t("settings.models.providers.openai.title")}
+        description={t("settings.models.providers.openai.description")}
         keyPlaceholder="sk-…"
         apiKey={openaiApiKey}
         onApiKeyChange={setOpenaiApiKey}
@@ -156,8 +158,8 @@ export function ModelsTab() {
 
       <ProviderCard
         provider="custom"
-        title="本地 / 自建端点"
-        description="兼容 OpenAI 协议的服务，例如 Ollama、vLLM、LM Studio。"
+        title={t("settings.models.providers.custom.title")}
+        description={t("settings.models.providers.custom.description")}
         keyPlaceholder="ollama"
         apiKey={customApiKey}
         onApiKeyChange={setCustomApiKey}
@@ -166,11 +168,14 @@ export function ModelsTab() {
         baseUrlPlaceholder="http://localhost:11434/v1"
       />
 
-      <SettingCard title="推理参数" description="控制模型在回答前的思考预算。">
+      <SettingCard
+        title={t("settings.models.reasoning.title")}
+        description={t("settings.models.reasoning.description")}
+      >
         <div className="divide-border/40 divide-y">
           <SettingRow
-            label="启用深度思考"
-            description="关闭后模型直接作答，延迟更低。"
+            label={t("settings.models.thinking.label")}
+            description={t("settings.models.thinking.description")}
             htmlFor="thinking-enabled"
             className="pb-3"
           >
@@ -182,14 +187,17 @@ export function ModelsTab() {
           </SettingRow>
 
           <SettingRow
-            label="推理强度"
-            description="调整后会自动套用对应的思考 Token 预算。"
+            label={t("settings.models.effort.label")}
+            description={t("settings.models.effort.description")}
             className="py-3"
           >
             <SegmentedControl
-              ariaLabel="推理强度"
+              ariaLabel={t("settings.models.effort.label")}
               value={reasoningEffort}
-              options={EFFORT_OPTIONS}
+              options={EFFORT_OPTIONS.map((option) => ({
+                ...option,
+                label: t(`settings.models.effort.${option.value}`),
+              }))}
               onChange={setReasoningEffort}
             />
           </SettingRow>
@@ -197,7 +205,7 @@ export function ModelsTab() {
           <div className="pt-3">
             <div className="flex items-center justify-between">
               <Label htmlFor="thinking-budget" className="text-foreground text-xs font-medium">
-                思考 Token 预算
+                {t("settings.models.budget")}
               </Label>
               <span className="text-primary font-mono text-xs font-medium">
                 {thinkingBudget} tokens

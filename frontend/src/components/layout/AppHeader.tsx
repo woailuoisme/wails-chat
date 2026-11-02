@@ -1,5 +1,7 @@
+import { useAui, useAuiState } from "@assistant-ui/react";
 import { Check, ChevronDown, Code2, Copy, PanelLeft, Trash2 } from "lucide-react";
 import * as React from "react";
+import { useTranslation } from "react-i18next";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -20,7 +22,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { AVAILABLE_MODELS } from "@/lib/ai/types";
 import { useArtifactsStore } from "@/lib/store/artifacts-store";
-import { useChatStore } from "@/lib/store/chat-store";
+import { useSettingsStore } from "@/lib/store/settings-store";
 import { copyText } from "@/lib/utils/clipboard";
 import { buildTranscript, type TranscriptFormat } from "@/lib/utils/transcript";
 
@@ -30,18 +32,16 @@ interface AppHeaderProps {
 }
 
 export function AppHeader({ onToggleSidebar, isSidebarOpen = true }: AppHeaderProps) {
-  const conversations = useChatStore((state) => state.conversations);
-  const activeConversationId = useChatStore((state) => state.activeConversationId);
-  const deleteConversation = useChatStore((state) => state.deleteConversation);
-  const renameConversation = useChatStore((state) => state.renameConversation);
+  const { t } = useTranslation();
+  const aui = useAui();
+  const title = useAuiState((state) => state.threadListItem.title);
+  const selectedModelId = useSettingsStore((state) => state.selectedModelId);
 
   const isArtifactsOpen = useArtifactsStore((state) => state.isOpen);
   const togglePanel = useArtifactsStore((state) => state.togglePanel);
 
   // 只订阅「是否有消息」这一布尔量，避免流式期间每帧重渲染头部
-  const hasMessages = useChatStore((state) =>
-    activeConversationId ? (state.messages[activeConversationId]?.length ?? 0) > 0 : false,
-  );
+  const hasMessages = useAuiState((state) => state.thread.messages.length > 0);
 
   const [isRenameOpen, setIsRenameOpen] = React.useState(false);
   const [draftTitle, setDraftTitle] = React.useState("");
@@ -53,42 +53,41 @@ export function AppHeader({ onToggleSidebar, isSidebarOpen = true }: AppHeaderPr
     return () => clearTimeout(timer);
   }, [copiedKind]);
 
-  const activeConversation = conversations.find(
-    (conversation) => conversation.id === activeConversationId,
-  );
-  const currentModel = AVAILABLE_MODELS.find((model) => model.id === activeConversation?.modelId);
+  const currentModel = AVAILABLE_MODELS.find((model) => model.id === selectedModelId);
+  const displayTitle = !title || title === "New Thread" ? t("chat.newThreadTitle") : title;
 
   const openRenameDialog = React.useCallback(() => {
-    if (!activeConversation) return;
-    setDraftTitle(activeConversation.title);
+    if (!title) return;
+    setDraftTitle(title);
     setIsRenameOpen(true);
-  }, [activeConversation]);
+  }, [title]);
 
   const submitRename = React.useCallback(() => {
-    if (!activeConversation) return;
-
     const next = draftTitle.trim();
-    if (next) renameConversation(activeConversation.id, next);
-
+    if (next) aui.threadListItem().rename(next);
     setIsRenameOpen(false);
-  }, [activeConversation, draftTitle, renameConversation]);
+  }, [aui, draftTitle]);
 
-  const copyTranscript = React.useCallback((format: TranscriptFormat) => {
-    const state = useChatStore.getState();
-    const conversationId = state.activeConversationId;
-    if (!conversationId) return;
+  const copyTranscript = React.useCallback(
+    (format: TranscriptFormat) => {
+      const messages = aui.thread.getState().messages.map((message) => ({
+        role: message.role,
+        content: message.content
+          .filter((part) => part.type === "text")
+          .map((part) => part.text)
+          .join("\n"),
+      }));
+      if (messages.length === 0) return;
 
-    const messages = state.messages[conversationId] ?? [];
-    if (messages.length === 0) return;
-
-    const title =
-      state.conversations.find((conversation) => conversation.id === conversationId)?.title ??
-      "对话";
-
-    copyText(buildTranscript(messages, title, format), "clipboard:transcript").then((ok) => {
-      if (ok) setCopiedKind(format);
-    });
-  }, []);
+      copyText(
+        buildTranscript(messages, title ?? t("transcript.defaultTitle"), format),
+        "clipboard:transcript",
+      ).then((ok) => {
+        if (ok) setCopiedKind(format);
+      });
+    },
+    [aui, t, title],
+  );
 
   return (
     <header
@@ -104,21 +103,20 @@ export function AppHeader({ onToggleSidebar, isSidebarOpen = true }: AppHeaderPr
             size="icon-xs"
             onClick={onToggleSidebar}
             className="text-muted-foreground hover:text-foreground h-7 w-7"
-            aria-label={isSidebarOpen ? "折叠侧边栏" : "展开侧边栏"}
-            title={isSidebarOpen ? "折叠侧边栏 (⌘B)" : "展开侧边栏 (⌘B)"}
+            aria-label={t(isSidebarOpen ? "nav.collapseSidebar" : "nav.expandSidebar")}
+            title={t(isSidebarOpen ? "nav.collapseSidebarShortcut" : "nav.expandSidebarShortcut")}
           >
             <PanelLeft className="size-4" aria-hidden="true" />
           </Button>
         )}
 
-        {activeConversation && (
-          <DropdownMenu>
+        <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <button
                 type="button"
                 className="group text-foreground hover:bg-muted/60 focus-visible:ring-ring flex items-center gap-1.5 rounded-lg px-2 py-1 text-xs font-semibold focus-visible:ring-2 focus-visible:outline-none"
               >
-                <span className="max-w-50 truncate">{activeConversation.title}</span>
+                <span className="max-w-50 truncate">{displayTitle}</span>
                 <ChevronDown
                   className="text-muted-foreground group-hover:text-foreground size-3 transition-transform"
                   aria-hidden="true"
@@ -127,23 +125,23 @@ export function AppHeader({ onToggleSidebar, isSidebarOpen = true }: AppHeaderPr
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start" className="w-48">
               <div className="text-muted-foreground px-2 py-1 text-[11px]">
-                模型：{currentModel?.name ?? "未指定"}
+                {t("nav.modelLabel")}
+                {currentModel?.name ?? t("nav.modelUnset")}
               </div>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={openRenameDialog} className="cursor-pointer text-xs">
-                重命名会话
+                {t("nav.renameConversation")}
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem
-                onClick={() => deleteConversation(activeConversation.id)}
+                onClick={() => aui.threadListItem().delete()}
                 className="text-destructive cursor-pointer gap-2 text-xs"
               >
                 <Trash2 className="size-3.5" aria-hidden="true" />
-                <span>删除会话</span>
+                <span>{t("nav.deleteConversation")}</span>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-        )}
       </div>
 
       <div className="flex items-center gap-1">
@@ -152,13 +150,13 @@ export function AppHeader({ onToggleSidebar, isSidebarOpen = true }: AppHeaderPr
           size="icon-xs"
           onClick={togglePanel}
           aria-pressed={isArtifactsOpen}
-          aria-label={isArtifactsOpen ? "关闭 Artifacts 面板" : "打开 Artifacts 面板"}
+          aria-label={t(isArtifactsOpen ? "nav.closeArtifacts" : "nav.openArtifacts")}
           className={`h-7 w-7 ${
             isArtifactsOpen
               ? "bg-primary/10 text-primary border-primary/20 border"
               : "text-muted-foreground hover:text-foreground"
           }`}
-          title={isArtifactsOpen ? "关闭 Artifacts 面板 (⌘J)" : "打开 Artifacts 面板 (⌘J)"}
+          title={t(isArtifactsOpen ? "nav.closeArtifactsShortcut" : "nav.openArtifactsShortcut")}
         >
           <Code2 className="size-4" aria-hidden="true" />
         </Button>
@@ -169,9 +167,9 @@ export function AppHeader({ onToggleSidebar, isSidebarOpen = true }: AppHeaderPr
               variant="ghost"
               size="icon-xs"
               disabled={!hasMessages}
-              aria-label="复制整段对话"
+              aria-label={t("nav.copyTranscript")}
               className="text-muted-foreground hover:text-foreground h-7 w-7 disabled:opacity-30"
-              title="复制整段对话"
+              title={t("nav.copyTranscript")}
             >
               {copiedKind ? (
                 <Check className="size-3.5 text-green-500" aria-hidden="true" />
@@ -185,13 +183,13 @@ export function AppHeader({ onToggleSidebar, isSidebarOpen = true }: AppHeaderPr
               onClick={() => copyTranscript("markdown")}
               className="cursor-pointer text-xs"
             >
-              复制为 Markdown
+              {t("nav.copyAsMarkdown")}
             </DropdownMenuItem>
             <DropdownMenuItem
               onClick={() => copyTranscript("plain")}
               className="cursor-pointer text-xs"
             >
-              复制为纯文本
+              {t("nav.copyAsPlainText")}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
@@ -199,11 +197,11 @@ export function AppHeader({ onToggleSidebar, isSidebarOpen = true }: AppHeaderPr
 
       <Dialog open={isRenameOpen} onOpenChange={setIsRenameOpen}>
         <DialogContent className="max-w-sm">
-          <DialogTitle>重命名会话</DialogTitle>
-          <DialogDescription>输入新的会话标题，回车保存。</DialogDescription>
+          <DialogTitle>{t("nav.renameTitle")}</DialogTitle>
+          <DialogDescription>{t("nav.renameDescription")}</DialogDescription>
 
           <Label htmlFor="rename-conversation" className="sr-only">
-            会话标题
+            {t("nav.conversationTitle")}
           </Label>
           <Input
             id="rename-conversation"
@@ -222,10 +220,10 @@ export function AppHeader({ onToggleSidebar, isSidebarOpen = true }: AppHeaderPr
 
           <DialogFooter>
             <Button variant="outline" onClick={() => setIsRenameOpen(false)}>
-              取消
+              {t("common.cancel")}
             </Button>
             <Button onClick={submitRename} disabled={!draftTitle.trim()}>
-              保存
+              {t("common.save")}
             </Button>
           </DialogFooter>
         </DialogContent>

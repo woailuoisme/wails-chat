@@ -2,15 +2,21 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 
 import App from "./App";
+import { migrateLegacyChat } from "./lib/chat/migrate-legacy-chat";
 import { reportCapabilityFailure } from "./lib/platform/env";
 import { scrubLegacySecrets } from "./lib/store/persist-utils";
-import { hydrateApiKeys, SETTINGS_PERSIST_KEY } from "./lib/store/settings-store";
+import "./i18n";
+import { hydrateApiKeys, useSettingsStore, SETTINGS_PERSIST_KEY } from "./lib/store/settings-store";
 
-// global.css 由 shadcn 生成，应用级样式单独引入，避免被 `shadcn add` 覆盖
-import "./global.css";
+// global.css 由 shadcn 生成，统一从自有入口 styles/index.css 引入，避免应用级指令被覆盖
+import "streamdown/styles.css";
+import "katex/dist/katex.min.css";
+import "./styles/index.css";
 import "./styles/chat-typography.css";
 import "./styles/shell.css";
-import "katex/dist/katex.min.css";
+
+// 旧 zustand 会话 → thread 存储，幂等
+migrateLegacyChat();
 
 const container = document.getElementById("root");
 
@@ -29,22 +35,28 @@ function scrubLegacyPersistedSecrets(): void {
     const scrubbed = scrubLegacySecrets(raw);
     if (scrubbed) {
       localStorage.setItem(SETTINGS_PERSIST_KEY, scrubbed);
-      console.info("[bootstrap] 已清除历史遗留的明文 API Key");
+      console.info("[bootstrap] removed legacy plaintext API keys");
     }
   } catch (error) {
     reportCapabilityFailure("bootstrap:legacy-secret-scrub", error);
   }
 }
 
+/** 语言变化时重挂载整棵树：非 hook 的 i18n.t（生成组件、类组件）也能立即刷新 */
+function Root() {
+  const language = useSettingsStore((state) => state.language);
+  return <App key={language} />;
+}
+
 /** 挂载 React 根节点 */
 function renderApp() {
   if (!container) {
-    throw new Error('未找到挂载节点 "#root"');
+    throw new Error('Root node "#root" not found');
   }
 
   ReactDOM.createRoot(container).render(
     <React.StrictMode>
-      <App />
+      <Root />
     </React.StrictMode>,
   );
 }

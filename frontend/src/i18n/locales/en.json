@@ -1,0 +1,412 @@
+{
+  "app": {
+    "name": "Starter Desktop",
+    "subtitle": "Local keys · system keychain",
+    "skipToContent": "Skip to main content"
+  },
+  "settings": {
+    "tabs": {
+      "general": {
+        "label": "General",
+        "description": "Desktop behavior, global shortcut and system integration"
+      },
+      "application": {
+        "label": "Application",
+        "description": "Input method, download folder and local data"
+      },
+      "appearance": {
+        "label": "Appearance",
+        "description": "Theme, text size, code font and reading width"
+      },
+      "shortcuts": {
+        "label": "Shortcuts",
+        "description": "Keyboard actions that are wired up"
+      },
+      "notifications": {
+        "label": "Notifications",
+        "description": "System banners and completion sound"
+      },
+      "models": {
+        "label": "Models",
+        "description": "Provider keys and reasoning parameters"
+      },
+      "projects": {
+        "label": "Instructions",
+        "description": "System prompt injected into every conversation"
+      }
+    },
+    "general": {
+      "globalShortcut": {
+        "title": "Global shortcut",
+        "description": "Bring the window to the front from any app.",
+        "footnote": "Off by default: a system-wide shortcut takes priority over other apps. Supports Alt / Option / CommandOrControl / Shift combined with letters or function keys."
+      },
+      "enableShortcut": {
+        "label": "Enable global shortcut",
+        "description": "The combination below is registered with the system only when enabled."
+      },
+      "shortcutInput": {
+        "label": "Global shortcut"
+      },
+      "integration": {
+        "title": "Desktop integration"
+      },
+      "launchOnStartup": {
+        "label": "Launch at login",
+        "description": "Start the app when you sign in to macOS."
+      },
+      "keepOnTop": {
+        "label": "Always on top",
+        "description": "Keep the window above other apps."
+      },
+      "closeToTray": {
+        "label": "Hide to tray on close",
+        "description": "Keep the process running; click the Dock icon to bring it back."
+      },
+      "language": {
+        "title": "Language",
+        "description": "Switch the interface language, applied immediately.",
+        "aria": "Interface language",
+        "zh": "简体中文",
+        "en": "English"
+      }
+    },
+    "title": "Settings",
+    "nav": {
+      "aria": "Settings categories"
+    },
+    "appearance": {
+      "theme": {
+        "title": "Theme",
+        "description": "\"System\" follows the macOS appearance.",
+        "dark": "Dark",
+        "light": "Light",
+        "system": "System"
+      },
+      "fontSize": {
+        "title": "Body text size",
+        "description": "Affects conversation text only, not UI dimensions.",
+        "small": "Small",
+        "medium": "Medium",
+        "large": "Large"
+      },
+      "codeFont": {
+        "title": "Code font",
+        "description": "Used by code blocks, the Artifacts code view and the message input."
+      },
+      "chatWidth": {
+        "title": "Conversation width",
+        "description": "Max width of the content column; affects long tables and code blocks.",
+        "standard": "Standard",
+        "wide": "Wide",
+        "full": "Full"
+      },
+      "preview": {
+        "title": "Size preview",
+        "description": "Rendered with the conversation typography.",
+        "body": "Preview: Rust rules out data races at compile time with the borrow checker, no runtime GC needed."
+      }
+    },
+    "shortcuts": {
+      "title": "Keyboard shortcuts",
+      "description": "Every shortcut below is wired to a real action.",
+      "scope": {
+        "app": "In app",
+        "system": "System-wide"
+      },
+      "actions": {
+        "newChat": "New chat",
+        "palette": "Command palette / search",
+        "settings": "Settings",
+        "toggleSidebar": "Toggle sidebar",
+        "toggleArtifacts": "Toggle Artifacts pane",
+        "send": "Send message",
+        "newline": "Insert newline",
+        "stop": "Stop generating",
+        "global": "Show window globally",
+        "globalDisabled": "Show window globally (disabled)"
+      }
+    },
+    "application": {
+      "sendKey": {
+        "title": "Send key",
+        "description": "Key combination that submits a message; Shift + Enter always inserts a newline.",
+        "aria": "Send message key",
+        "enter": "Enter (↵)",
+        "metaEnter": "⌘ + Enter"
+      },
+      "drafts": {
+        "label": "Keep drafts",
+        "description": "Remember unsent input when switching conversations."
+      },
+      "download": {
+        "title": "Download folder",
+        "description": "Artifacts exports and code downloads are saved here.",
+        "footnote": "Supports the ~ prefix; the folder is created when missing.",
+        "aria": "Download folder path"
+      },
+      "reset": {
+        "title": "Reset local data",
+        "description": "Deletes every conversation, message and draft. API keys live in the system keychain and are unaffected.",
+        "action": "Clear all conversations",
+        "cleared": "Cleared",
+        "confirmTitle": "Clear all conversations?",
+        "confirmBody": "This removes every conversation stored on this device and cannot be undone.",
+        "confirmAction": "Clear everything"
+      }
+    },
+    "notifications": {
+      "title": "Completion alerts",
+      "system": {
+        "label": "System notification",
+        "description": "Send a macOS notification when a reply finishes while the window is in the background."
+      },
+      "sound": {
+        "label": "Completion sound",
+        "description": "Play a short chime when generation ends."
+      }
+    },
+    "projects": {
+      "title": "Global system prompt",
+      "description": "Injected as the system message on every request to keep tone and format consistent.",
+      "footnote": "Leave empty to send no system message. Changes apply immediately.",
+      "aria": "System prompt",
+      "placeholder": "For example: always answer in Simplified Chinese and label code blocks."
+    },
+    "models": {
+      "providers": {
+        "openrouter": {
+          "title": "OpenRouter (recommended)",
+          "description": "One key for hundreds of models — Claude, GPT, Gemini, DeepSeek — including free endpoints."
+        },
+        "deepseek": {
+          "title": "DeepSeek direct",
+          "description": "Low latency, low cost, native thinking-mode toggle."
+        },
+        "openai": {
+          "title": "OpenAI direct",
+          "description": "Talk to the official OpenAI endpoint."
+        },
+        "custom": {
+          "title": "Local / self-hosted",
+          "description": "Any OpenAI-compatible service, e.g. Ollama, vLLM or LM Studio."
+        },
+        "keychainNote": "Keys are stored in the macOS keychain, never in the WebView localStorage."
+      },
+      "reasoning": {
+        "title": "Reasoning",
+        "description": "Controls how much the model thinks before answering."
+      },
+      "thinking": {
+        "label": "Enable deep thinking",
+        "description": "When off, the model answers directly with lower latency."
+      },
+      "effort": {
+        "label": "Reasoning effort",
+        "description": "Changing this applies the matching thinking-token budget.",
+        "low": "Low",
+        "medium": "Medium",
+        "high": "High"
+      },
+      "budget": "Thinking token budget",
+      "descriptions": {
+        "openrouter_free": "Smart free router that picks an available free endpoint; vision and tools supported at zero token cost",
+        "google_gemini_2_0_flash_exp_free": "Google's fast multimodal model with image understanding and millisecond streaming",
+        "meta_llama_llama_3_2_11b_vision_instruct_free": "Meta's open multimodal model for charts, UI screenshots and natural images",
+        "deepseek_deepseek_r1_free": "Free open reasoning model that shows its full chain of thought",
+        "meta_llama_llama_3_3_70b_instruct_free": "Meta's open 70B instruction model with well-rounded reasoning",
+        "qwen_qwen_2_5_coder_32b_instruct_free": "Qwen 32B coding model for generation, refactoring and architecture",
+        "deepseek_flash": "DeepSeek's cost-effective model with 1M context, vision and thinking toggle",
+        "deepseek_v4_pro": "DeepSeek's flagship model with 1M context for hard reasoning and planning",
+        "anthropic_claude_3_7_sonnet": "Anthropic hybrid reasoning model with explicit thinking budget, strong on code and long-form",
+        "anthropic_claude_3_5_sonnet": "Anthropic's previous flagship: stable, general-purpose, follows instructions well",
+        "anthropic_claude_3_5_haiku": "Anthropic's lightweight model for low-latency chat and summarization",
+        "openai_gpt_4o": "OpenAI's flagship multimodal model, balanced across vision and general tasks",
+        "openai_o3_mini": "OpenAI's small reasoning model with cheaper math and code reasoning"
+      }
+    },
+    "description": "Desktop behavior, appearance, model access and instructions"
+  },
+  "common": {
+    "cancel": "Cancel",
+    "save": "Save",
+    "copy": "Copy",
+    "copied": "Copied",
+    "download": "Download"
+  },
+  "nav": {
+    "collapseSidebar": "Collapse sidebar",
+    "expandSidebar": "Expand sidebar",
+    "collapseSidebarShortcut": "Collapse sidebar (⌘B)",
+    "expandSidebarShortcut": "Expand sidebar (⌘B)",
+    "modelLabel": "Model: ",
+    "modelUnset": "Not set",
+    "renameConversation": "Rename conversation",
+    "deleteConversation": "Delete conversation",
+    "openArtifacts": "Open Artifacts panel",
+    "closeArtifacts": "Close Artifacts panel",
+    "openArtifactsShortcut": "Open Artifacts panel (⌘J)",
+    "closeArtifactsShortcut": "Close Artifacts panel (⌘J)",
+    "copyTranscript": "Copy entire conversation",
+    "copyAsMarkdown": "Copy as Markdown",
+    "copyAsPlainText": "Copy as plain text",
+    "renameTitle": "Rename conversation",
+    "renameDescription": "Enter a new title and press Enter to save.",
+    "search": "Search",
+    "projectInstructions": "Project instructions",
+    "preferences": "Preferences",
+    "conversationTitle": "Conversation title"
+  },
+  "transcript": {
+    "defaultTitle": "Conversation",
+    "roles": {
+      "user": "Me",
+      "assistant": "Assistant",
+      "system": "System"
+    }
+  },
+  "attachments": {
+    "tooLarge": "{{name}} is larger than {{size}}MB and was skipped",
+    "readFailed": "Could not read {{name}}",
+    "missing": "Attachment is missing",
+    "add": "Add attachment"
+  },
+  "composer": {
+    "modelAria": "Current model {{model}}, reasoning effort {{effort}}",
+    "modelsHeading": "Models",
+    "visionBadge": "Supports vision",
+    "usage": "Account usage"
+  },
+  "errors": {
+    "panel": {
+      "chat": "Conversation",
+      "artifacts": "Artifacts panel"
+    },
+    "pageTitle": "Something went wrong",
+    "pageBody": "An unexpected error occurred in the desktop view.",
+    "reload": "Reload app",
+    "generationFailedTitle": "Generation failed",
+    "generationFailed": "Generation failed. Check the model and API key, then retry.",
+    "panelFailed": "{{label}} failed to render",
+    "panelIsolated": "This area was isolated; the rest of the app still works. It retries when you switch conversations or collapse the panel.",
+    "threadNotFound": "Conversation {{id}} not found"
+  },
+  "palette": {
+    "title": "Search Starter",
+    "description": "Search conversations, Artifacts and commands",
+    "placeholder": "Search conversations, Artifacts or commands (⌘K)…",
+    "empty": "No results.",
+    "actions": "Actions",
+    "newChat": "New chat",
+    "openSettings": "Open settings and API keys",
+    "conversations": "Conversations",
+    "newConversation": "New conversation",
+    "switchModel": "Switch model",
+    "current": "Current"
+  },
+  "artifacts": {
+    "empty": "No Artifacts generated yet",
+    "history": "Version history",
+    "version": "Version {{version}}",
+    "viewMode": "View mode",
+    "fullscreen": "Fullscreen",
+    "exitFullscreen": "Exit fullscreen",
+    "closePanel": "Close panel",
+    "closePanelAria": "Close Artifacts panel",
+    "lines": "lines",
+    "saveTo": "Save to {{path}}",
+    "saving": "Saving",
+    "savedTo": "Saved to {{path}}",
+    "mermaid": {
+      "title": "Mermaid diagram",
+      "zoomIn": "Zoom in",
+      "zoomOut": "Zoom out",
+      "resetZoom": "Reset zoom",
+      "failed": "Mermaid rendering failed, showing source instead"
+    },
+    "sandbox": {
+      "device": {
+        "desktop": "Desktop",
+        "tablet": "Tablet (768px)",
+        "mobile": "Mobile (375px)"
+      },
+      "deviceAria": "Preview device size",
+      "exportTitle": "Export this preview as an HTML file",
+      "export": "Export",
+      "toggleConsole": "Toggle console",
+      "console": "Console ({{count}})",
+      "reload": "Reload preview",
+      "frameTitle": "Artifacts sandbox preview",
+      "consoleAria": "Sandbox console output",
+      "consoleEmpty": "No console output or errors yet."
+    }
+  },
+  "chat": {
+    "newThreadTitle": "New conversation"
+  },
+  "time": {
+    "justNow": "just now"
+  },
+  "thread": {
+    "loadingConversation": "Loading conversation",
+    "placeholder": "Send a message…",
+    "messageInput": "Message input",
+    "copy": "Copy",
+    "loadingEarlier": "Loading earlier messages",
+    "loadEarlier": "Load earlier messages",
+    "scrollToBottom": "Scroll to bottom",
+    "voiceInput": "Voice input",
+    "startVoiceInput": "Start voice input",
+    "stopDictation": "Stop dictation",
+    "stopVoiceInput": "Stop voice input",
+    "send": "Send message",
+    "resume": "Resume generating",
+    "cancelSending": "Cancel sending",
+    "stop": "Stop generating",
+    "assistantWorking": "Assistant is working",
+    "helpful": "Helpful",
+    "notHelpful": "Not helpful",
+    "refresh": "Regenerate",
+    "more": "More",
+    "edit": "Edit",
+    "previous": "Previous",
+    "next": "Next",
+    "youSaid": "You said",
+    "assistantSaid": "Assistant said",
+    "assistantSpeaking": "Assistant is speaking",
+    "voiceConversation": "Voice conversation",
+    "welcome": "How can I help you today?"
+  },
+  "threadList": {
+    "newChat": "New chat",
+    "search": "Search threads",
+    "today": "Today",
+    "earlier": "Earlier",
+    "rename": "Rename thread",
+    "loading": "Loading threads",
+    "more": "More options",
+    "running": "Running",
+    "yesterday": "Yesterday",
+    "empty": "No threads found",
+    "newThread": "New conversation",
+    "archive": "Archive",
+    "delete": "Delete"
+  },
+  "image": {
+    "zoom": "Click to zoom image",
+    "zoomed": "Zoomed image",
+    "closeZoom": "Close zoomed image",
+    "regenerate": "Regenerate image",
+    "download": "Download image",
+    "copy": "Copy image"
+  },
+  "reasoning": {
+    "label": "Reasoning"
+  },
+  "file": {
+    "generic": "File",
+    "text": "Text file",
+    "typed": "{{type}} file",
+    "unnamed": "Unnamed file"
+  }
+}

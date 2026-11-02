@@ -1,6 +1,8 @@
 import { AlertTriangle, RotateCcw } from "lucide-react";
 import * as React from "react";
 
+import i18n from "@/i18n";
+
 interface Props {
   children: React.ReactNode;
   /** 自定义降级 UI；缺省时渲染整屏错误页 */
@@ -69,13 +71,13 @@ export class ErrorBoundary extends React.Component<Props, State> {
           <div className="bg-destructive/10 text-destructive border-destructive/20 flex size-14 items-center justify-center rounded-2xl border shadow-sm">
             <AlertTriangle className="size-7" aria-hidden="true" />
           </div>
-          <h2 className="text-lg font-semibold tracking-tight">页面出错了</h2>
+          <h2 className="text-lg font-semibold tracking-tight">{i18n.t("errors.pageTitle")}</h2>
           <p
             role="alert"
             aria-live="assertive"
             className="text-muted-foreground bg-muted/40 border-border/60 max-w-full overflow-x-auto rounded-lg border p-3 text-left font-mono text-xs"
           >
-            {this.state.error?.message ?? "桌面视图中发生了未预期的错误。"}
+            {this.state.error?.message ?? i18n.t("errors.pageBody")}
           </p>
           <button
             type="button"
@@ -83,7 +85,7 @@ export class ErrorBoundary extends React.Component<Props, State> {
             className="bg-primary text-primary-foreground hover:bg-primary/90 focus-visible:ring-ring flex cursor-pointer items-center gap-2 rounded-lg px-4 py-2 text-xs font-medium transition-colors focus-visible:ring-2 focus-visible:outline-none"
           >
             <RotateCcw className="size-3.5" aria-hidden="true" />
-            <span>重新加载应用</span>
+            <span>{i18n.t("errors.reload")}</span>
           </button>
         </div>
       </div>
@@ -107,8 +109,8 @@ export function PanelErrorFallback({ label }: PanelErrorFallbackProps) {
       className="text-muted-foreground flex h-full flex-col items-center justify-center gap-2 p-6 text-xs"
     >
       <AlertTriangle className="text-destructive size-6" aria-hidden="true" />
-      <span className="text-foreground font-medium">{label}渲染失败</span>
-      <span>已隔离该区域，其余功能仍可正常使用。切换会话或收起面板后会自动重试。</span>
+      <span className="text-foreground font-medium">{i18n.t("errors.panelFailed", { label })}</span>
+      <span>{i18n.t("errors.panelIsolated")}</span>
     </div>
   );
 }
