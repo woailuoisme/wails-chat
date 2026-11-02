@@ -97,7 +97,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastUpgradeCheck = 1500;
-				ORGANIZATIONNAME = "seaside";
+				ORGANIZATIONNAME = "My Company";
 				TargetAttributes = {
 					C0DEBEEF0000000000000040 = {
 						CreatedOnToolsVersion = 15.0;
@@ -180,7 +180,7 @@
 					"$(inherited)",
 					"-ObjC",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.hxg.starter";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.mycompany.myproduct";
 				PRODUCT_NAME = "My Product";
 				CODE_SIGNING_ALLOWED = NO;
 				SDKROOT = iphoneos;
@@ -196,7 +196,7 @@
 					"$(inherited)",
 					"-ObjC",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.hxg.starter";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.mycompany.myproduct";
 				PRODUCT_NAME = "My Product";
 				CODE_SIGNING_ALLOWED = NO;
 				SDKROOT = iphoneos;

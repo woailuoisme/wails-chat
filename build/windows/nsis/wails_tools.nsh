@@ -8,7 +8,7 @@
     !define INFO_PROJECTNAME "starter"
 !endif
 !ifndef INFO_COMPANYNAME
-    !define INFO_COMPANYNAME "seaside"
+    !define INFO_COMPANYNAME "My Company"
 !endif
 !ifndef INFO_PRODUCTNAME
     !define INFO_PRODUCTNAME "My Product"
@@ -17,7 +17,7 @@
     !define INFO_PRODUCTVERSION "0.1.0"
 !endif
 !ifndef INFO_COPYRIGHT
-    !define INFO_COPYRIGHT "© 2026, seaside"
+    !define INFO_COPYRIGHT "(c) 2025, My Company"
 !endif
 !ifndef PRODUCT_EXECUTABLE
     !define PRODUCT_EXECUTABLE "${INFO_PROJECTNAME}.exe"
